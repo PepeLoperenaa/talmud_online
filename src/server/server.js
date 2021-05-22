@@ -8,6 +8,6 @@ app.get('/', (req, res) => {
     res.send(user_on);
 });
 
-server.listen(8080, () => {
-    console.log('listening on *:8080')
+server.listen(3000, () => {
+    console.log('listening on *:3000')
 })
