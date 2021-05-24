@@ -1,5 +1,5 @@
 body {
-    background-image: url("src/img/pokertable.png");
+    background-image: url("../img/pokertable.png");
     background-color: black;
     background-repeat: no-repeat;
     background-position: center;
@@ -33,7 +33,7 @@ button {
     visibility: hidden;
 }
 
-#card {
+#card1 {
     position: absolute;
     left: 650px;
     top: 580px;

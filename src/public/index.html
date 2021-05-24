@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="/css/main.css">
+    <meta charset="UTF-8">
+    <meta
+            name='viewport'
+            content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'
+    />
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="talmud.js"></script>
+    <title>Talmud!</title>
+</head>
+<body>
+<div id="player1">
+    <button id="OnlinePlayer" onclick=playerOn();>
+        <p>Press to join the table</p>
+    </button>
+</div>
+<div id="player1Cards">
+    <div id="card1">
+    </div>
+    <div id="card2">
+    </div>
+    <div id="card3">
+    </div>
+    <div id="card4">
+    </div>
+</div>
+<div id="deck" onclick=requestCard();>
+    <img src="reves.png" />
+</div>
+</body>
+</html>
