@@ -4,9 +4,12 @@ var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
 // players
-var players = [];
+var players = []; //need to add 4 players here.
 // cards in deck
-var new_cards = []; // para robar
+var new_cards = ["naipes/1Oro.png", "naipes/2Oro.png", "naipes/3Oro.png", "naipes/4Oro.png", "naipes/5Oro.png", "naipes/6Oro.png", "naipes/7Oro.png", "naipes/8Oro.png", "naipes/9Oro.png", "naipes/10Oro.png", "naipes/11Oro.png", "naipes/12Oro.png",
+                 "naipes/1Copa.png", "naipes/2Copa.png", "naipes/3Copa.png", "naipes/4Copa.png", "naipes/5Copa.png", "naipes/6Copa.png", "naipes/7Copa.png", "naipes/8Copa.png", "naipes/9Copa.png", "naipes/10Copa.png", "naipes/11Copa.png", "naipes/12Copa.png",
+                 "naipes/1Espada.png", "naipes/2Espada.png", "naipes/3Espada.png", "naipes/4Espada.png", "naipes/5Espada.png", "naipes/6Espada.png", "naipes/7Espada.png", "naipes/8Espada.png", "naipes/9Espada.png", "naipes/10Espada.png", "naipes/11Espada.png", "naipes/12Espada.png",
+                 "naipes/1Baston.png", "naipes/2Baston.png", "naipes/3Baston.png", "naipes/4Baston.png", "naipes/5Baston.png", "naipes/6Baston.png", "naipes/7Baston.png", "naipes/8Baston.png", "naipes/9Baston.png", "naipes/10Baston.png", "naipes/11Baston.png", "naipes/1Baston.png",]; // para robar
 var push_cards = []; // las que envian los jugadores
 
 app.use(express.static('public'));
@@ -17,7 +20,7 @@ io.on('connection', function(socket) {
     // randomize cards
     var new_player = {
         name: "nuevo",
-        cards: ["1Baston.PNG","1Copa.PNG","1Espada.PNG","1Oro.PNG"]
+        cards: [Math.random() * (new_cards.length)]
     }
 
     // add player to players array
@@ -29,7 +32,7 @@ io.on('connection', function(socket) {
 
     socket.on('get_card', function(data) {
         // get player name (es data)
-
+        data.name;
         // randomize new card
 
         // update players array so this player gets the new card
@@ -40,10 +43,8 @@ io.on('connection', function(socket) {
     });
 });
 
-
-
 server.listen(3000, function() {
-    console.log("Servidor corriendo en http://localhost:3000");
+    console.log("Server is running in: http://localhost:3000");
 });
 
 
