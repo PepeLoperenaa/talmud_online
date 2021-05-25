@@ -1,30 +1,43 @@
 const alert = "Welcome to the game";
 
 var me = null;
+var open_chairs = 1;
 
 var socket = io.connect('http://localhost:3000', {
     'forceNew': true
 });
 
-socket.on('info', function(data) {
+socket.on('new_status', function(data) {
     me = data;
-    render(data);
+    renderStatus(data);
 });
 
-function render (data) {
+socket.on('player_accepted', function(data) {
+    renderNewPlayer(data);
+});
+
+function renderNewPlayer (data) {
+    open_chairs++;
+    console.log("opened chair number " + open_chairs);
+    var div = document.getElementById("player"+open_chairs+"site");
+    div.style.visibility = 'block';
+}
+
+function renderStatus (data) {
     console.log(data);
 
-    for(var i=1;i<=data.cards.length;i++) {
-        var div = document.getElementById("card"+i);
-        var path = "/naipes/"+data.cards[i-1];
-        div.innerHTML = "<img src='"+ path+ "' alt=\"card\">";
+    for (var i = 1; i <= data.cards.length; i++) {
+        var div = document.getElementById("card" + i);
+        var path = "/" + data.cards[i - 1];
+        div.innerHTML = "<img src='" + path + "' alt=\"card\">";
     }
 }
 
 function playerOn() {
+
     const c = document.getElementById('player1Cards');
     c.setAttribute("style", "visibility:visible"); //dont know if jquery code goes here for the fade in.
-    socket.emit('new_player', 'jugador1');
+    socket.emit('new_player', 'access');
     return false;
 }
 

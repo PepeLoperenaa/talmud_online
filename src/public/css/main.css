@@ -27,6 +27,13 @@ button {
     width: 200px;
 }
 
+#player2site {
+    position: absolute;
+    left: 10px;
+    visibility: hidden;
+}
+
+
 #player1Cards {
     position: absolute;
     left: 10px;
