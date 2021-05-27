@@ -16,8 +16,8 @@ p {
 }
 
 img {
-    width: 120px;
-    height: 170px;
+    width: 100px;
+    height: 130px;
 }
 
 button {
@@ -33,11 +33,17 @@ button {
     visibility: hidden;
 }
 
+#player2Cards{
+    position: absolute;
+    left: 1400px;
+    top: 180px;
+    visibility: visible;
+    /*need to move the cards horizontally*/
+}
 
 #player1Cards {
     position: absolute;
     left: 10px;
-    visibility: hidden;
 }
 
 #card1 {
