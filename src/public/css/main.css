@@ -76,12 +76,16 @@ button {
     /*need to move the cards horizontally*/
 }
 
+#card101{
+    /*This is a test to see how to align one card*/
+}
+
 #player3site {
     position: absolute;
     left: 800px;
     bottom: 250px;
     visibility: hidden;
-    /*need to move the cards on the top*/
+    /*mirror the images just like player 1 cards */
 }
 
 #player3Cards{
@@ -112,7 +116,11 @@ button {
     display: inline-block;
 }*/
 
-
+/*TODO:
+   Create container with enough space to put the images horizontally
+   Check the project "horizontal_alignment" to see an example
+   finish up CSS tomorrow
+*/
 
 #onlinePlayer {
     background: transparent;
