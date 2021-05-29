@@ -190,6 +190,6 @@ button {
     position: absolute;
     left: 940px;
     top: 403px;
-    visibility: hidden;
+    visibility: visible;
 }
 
