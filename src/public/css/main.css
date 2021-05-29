@@ -73,33 +73,47 @@ button {
     left: 1400px;
     top: 180px;
     visibility: visible;
-    /*need to move the cards horizontally*/
+    /*Rotate cards 90degrees*/
 }
 
-#card101{
-    /*This is a test to see how to align one card*/
-}
 
 #player3site {
     position: absolute;
-    left: 800px;
-    bottom: 250px;
     visibility: hidden;
-    /*mirror the images just like player 1 cards */
 }
 
 #player3Cards{
     position: absolute;
-    left: 100px;
-    top: 180px;
     visibility: visible;
+    top: 220px;
+    left: 10px;
+}
+
+#card201 {
+    position: absolute;
+    left: 650px;
+}
+
+#card202 {
+    position: absolute;
+    left: 780px;
+}
+
+#card203 {
+    position: absolute;
+    left: 910px;
+}
+
+#card204 {
+    position: absolute;
+    left: 1040px;
 }
 
 #player4site {
     position: absolute;
     left: 325px;
     visibility: hidden;
-    /*need to move the cards on the top*/
+    /*Mirror cards from player 2*/
 }
 
 #player4Cards{
