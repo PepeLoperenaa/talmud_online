@@ -29,13 +29,13 @@ button {
 
 #player1 {
     position: absolute;
-    left: 810px;
+    left: 850px;
     top: 800px;
 }
 
 #player1Cards {
     position: absolute;
-    left: 10px;
+    left: 65px;
 }
 
 #card1 {
@@ -46,19 +46,19 @@ button {
 
 #card2 {
     position: absolute;
-    left: 780px;
+    left: 760px;
     top: 580px;
 }
 
 #card3 {
     position: absolute;
-    left: 910px;
+    left: 870px;
     top: 580px;
 }
 
 #card4 {
     position: absolute;
-    left: 1040px;
+    left: 980px;
     top: 580px;
 }
 
@@ -71,22 +71,45 @@ button {
 #player2Cards{
     position: absolute;
     left: 1400px;
-    top: 180px;
+    top: 230px;
     visibility: visible;
-    /*Rotate cards 90degrees*/
 }
+
+#card101{
+    position: absolute;
+    transform: rotate(90deg);
+}
+#card102{
+    position: absolute;
+    transform: rotate(90deg);
+    top: 110px
+}
+
+#card103{
+    position: absolute;
+    transform: rotate(90deg);
+    top: 220px
+}
+
+#card104{
+    position: absolute;
+    transform: rotate(90deg);
+    top: 330px;
+}
+
 
 
 #player3site {
     position: absolute;
     visibility: hidden;
+    top: 220px;
+    left: 70px;
 }
 
 #player3Cards{
     position: absolute;
     visibility: visible;
-    top: 220px;
-    left: 10px;
+
 }
 
 #card201 {
@@ -96,31 +119,53 @@ button {
 
 #card202 {
     position: absolute;
-    left: 780px;
+    left: 760px;
 }
 
 #card203 {
     position: absolute;
-    left: 910px;
+    left: 870px;
 }
 
 #card204 {
     position: absolute;
-    left: 1040px;
+    left: 980px;
 }
 
 #player4site {
     position: absolute;
     left: 325px;
     visibility: hidden;
-    /*Mirror cards from player 2*/
 }
 
 #player4Cards{
     position: absolute;
-    left: 100px;
-    top: 180px;
+    left: 70px;
+    top: 230px;
     visibility: visible;
+}
+
+#card301 {
+    position: absolute;
+    transform: rotate(90deg);
+}
+
+#card302 {
+    position: absolute;
+    transform: rotate(90deg);
+    top: 110px;
+}
+
+#card303 {
+    position: absolute;
+    transform: rotate(90deg);
+    top: 220px;
+}
+
+#card304 {
+    position: absolute;
+    transform: rotate(90deg);
+    top: 330px;
 }
 
 /*#dot { This will be used when the player comes into the game. will use this as a reference.
@@ -130,14 +175,21 @@ button {
     display: inline-block;
 }*/
 
-/*TODO:
-   Create container with enough space to put the images horizontally
-   Check the project "horizontal_alignment" to see an example
-   finish up CSS tomorrow
-*/
-
 #onlinePlayer {
     background: transparent;
     color: transparent;
+}
+
+#deck{
+    position: absolute;
+    left: 825px;
+    top: 403px;
+}
+
+#oldDeck{
+    position: absolute;
+    left: 940px;
+    top: 403px;
+    visibility: hidden;
 }
 
