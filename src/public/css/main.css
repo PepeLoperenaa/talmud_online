@@ -68,35 +68,35 @@ button {
     visibility: hidden;
 }
 
-#player2Cards{
+#player2Cards {
     position: absolute;
     left: 1400px;
     top: 230px;
-    visibility: visible;
+    visibility: hidden;
 }
 
-#card101{
+#card101 {
     position: absolute;
     transform: rotate(90deg);
 }
-#card102{
+
+#card102 {
     position: absolute;
     transform: rotate(90deg);
     top: 110px
 }
 
-#card103{
+#card103 {
     position: absolute;
     transform: rotate(90deg);
     top: 220px
 }
 
-#card104{
+#card104 {
     position: absolute;
     transform: rotate(90deg);
     top: 330px;
 }
-
 
 
 #player3site {
@@ -106,10 +106,9 @@ button {
     left: 70px;
 }
 
-#player3Cards{
+#player3Cards {
     position: absolute;
-    visibility: visible;
-
+    visibility: hidden;
 }
 
 #card201 {
@@ -138,11 +137,11 @@ button {
     visibility: hidden;
 }
 
-#player4Cards{
+#player4Cards {
     position: absolute;
     left: 70px;
     top: 230px;
-    visibility: visible;
+    visibility: hidden;
 }
 
 #card301 {
@@ -180,16 +179,18 @@ button {
     color: transparent;
 }
 
-#deck{
+#deck {
     position: absolute;
     left: 825px;
     top: 403px;
 }
 
-#oldDeck{
+#oldDeck {
     position: absolute;
     left: 940px;
     top: 403px;
-    visibility: visible;
+    visibility: hidden;
 }
+
+
 

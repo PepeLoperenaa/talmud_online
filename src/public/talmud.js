@@ -7,23 +7,26 @@ var socket = io.connect('http://localhost:3000', {
     'forceNew': true
 });
 
-socket.on('new_status', function(data) {
+socket.on('new_status', function (data) {
     me = data;
     renderStatus(data);
 });
 
-socket.on('player_accepted', function(data) {
+socket.on('player_accepted', function (data) {
     renderNewPlayer(data);
 });
 
-function renderNewPlayer (data) {
+function renderNewPlayer(data) {
     open_chairs++;
     console.log("opened chair number " + open_chairs);
-    var div = document.getElementById("player"+open_chairs+"site");
-    div.style.visibility = 'block';
+    var div = document.getElementById("player" + open_chairs + "Cards");
+    div.style.visibility = 'visible'; //if a new player comes into the game, then show new cards on the main page.
+    /*
+    Need to add the ID of the player so that when a player comes into the game, the other cards are alredy added if needed.
+     */
 }
 
-function renderStatus (data) {
+function renderStatus(data) {
     console.log(data);
 
     for (var i = 1; i <= data.cards.length; i++) {
