@@ -22,7 +22,7 @@ function renderNewPlayer(data) {
     var div = document.getElementById("player" + open_chairs + "Cards");
     div.style.visibility = 'visible'; //if a new player comes into the game, then show new cards on the main page.
     /*
-    Need to add the ID of the player so that when a player comes into the game, the other cards are alredy added if needed.
+    Need to add the ID of the player so that when a player comes into the game, the other cards are already added if needed.
      */
 }
 
