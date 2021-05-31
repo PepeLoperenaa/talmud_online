@@ -1,5 +1,6 @@
 const alert = "Welcome to the game";
 
+var game_status = {};
 var me = null;
 var open_chairs = 1;
 
@@ -7,16 +8,31 @@ var socket = io.connect('http://localhost:3000', {
     'forceNew': true
 });
 
+socket.on('game_status', function (data) {
+    game_status = data;
+    enable_buttons(data.turn === me.name);
+});
+
+socket.on('error', function (data) {
+    window.alert("Full room!");
+});
+
 socket.on('new_status', function (data) {
-    me = data;
+    me = data.player_info;
     renderStatus(data);
 });
 
-socket.on('player_accepted', function (data) {
-    renderNewPlayer(data);
+socket.on('get_card_response', function (data) {
+    me = data;
+    console.log("get_card_response: " + data);
+    updateStatus(data);
 });
 
-function renderNewPlayer(data) {
+socket.on('player_accepted', function (data) {
+    renderNewPlayer();
+});
+
+function renderNewPlayer() {
     open_chairs++;
     console.log("opened chair number " + open_chairs);
     var div = document.getElementById("player" + open_chairs + "Cards");
@@ -29,15 +45,40 @@ function renderNewPlayer(data) {
 function renderStatus(data) {
     console.log(data);
 
-    for (var i = 1; i <= data.cards.length; i++) {
+
+    for (var i = 1; i <= data.player_info.cards.length; i++) {
         var div = document.getElementById("card" + i);
-        var path = "/" + data.cards[i - 1];
-        div.innerHTML = "<img src='" + path + "' alt=\"card\">";
+        if (data.player_info.cards[i - 1].status === "visible") {
+            var path = "/" + data.player_info.cards[i - 1].value;
+            div.innerHTML = "<img src='" + path + "' alt=\"card\">";
+        } else {
+            div.innerHTML = "<img src='naipes/reves.png' alt=\"card\">"
+        }
+    }
+    document.getElementById('OnlinePlayer').style.visibility = "hidden";
+
+    // open as many chais as number of players in
+    for (var i = 0; i < data.num_players - 1; i++) {
+        renderNewPlayer();
     }
 }
 
-function playerOn() {
+function updateStatus(data) {
+    console.log(data);
 
+    for (var i = 1; i <= data.cards.length; i++) {
+        var div = document.getElementById("card" + i);
+        if (data.cards[i - 1].status === "visible") {
+            var path = "/" + data.cards[i - 1].value;
+            div.innerHTML = "<img src='" + path + "' alt=\"card\">";
+        } else {
+            div.innerHTML = "<img src='naipes/reves.png' alt=\"card\">"
+        }
+    }
+
+}
+
+function playerOn() {
     const c = document.getElementById('player1Cards');
     c.setAttribute("style", "visibility:visible"); //dont know if jquery code goes here for the fade in.
     socket.emit('new_player', 'access');
@@ -45,8 +86,26 @@ function playerOn() {
 }
 
 // pedir carta al servidor, indicando quien soy
-function requestCard() {
-    socket.emit('get_card', me.name);
-    // el servidor responde con info de sus nuevas cartas
-    return false;
+function getCard() {
+
+    var index = window.prompt("Choose one of your cards (1-" + me.cards.length + ")", "-1");
+    if (index === "-1") {
+        return;
+    }
+
+    index = parseInt(index) - 1;
+
+    var change = {
+        player: me,
+        index_change: index
+    }
+
+    socket.emit('get_card', change);
+
+    document.getElementById("pushed_card").src = me.cards[index].value;
+    document.getElementById("oldDeck").style.visibility = "visible";
+}
+
+function enable_buttons(active) {
+    // enable/disable buttons
 }
