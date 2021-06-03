@@ -179,6 +179,30 @@ button {
     color: transparent;
 }
 
+#getCard{
+    background: transparent;
+    color: transparent;
+    position: absolute;
+    right: 150px;
+    bottom: 80px;
+}
+
+#screamTalmud{
+    background: transparent;
+    color: transparent;
+    position: absolute;
+    right: 50px;
+    bottom: 80px;
+}
+
+#specialAbility{
+    background: transparent;
+    color: transparent;
+    position: absolute;
+    bottom: 80px;
+    left: 70px;
+}
+
 #deck {
     position: absolute;
     left: 825px;
