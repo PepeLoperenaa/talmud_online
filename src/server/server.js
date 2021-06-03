@@ -12,10 +12,10 @@ var game_status = {
 // players
 var players = []; //need to add 4 players here.
 // cards in deck
-var new_cards = ["naipes/1Oro.png", "naipes/2Oro.png", "naipes/3Oro.png", "naipes/4Oro.png", "naipes/5Oro.png", "naipes/6Oro.png", "naipes/7Oro.png", "naipes/8Oro.png", "naipes/9Oro.png", "naipes/10Oro.png", "naipes/11Oro.png", "naipes/12Oro.png",
-    "naipes/1Copa.png", "naipes/2Copa.png", "naipes/3Copa.png", "naipes/4Copa.png", "naipes/5Copa.png", "naipes/6Copa.png", "naipes/7Copa.png", "naipes/8Copa.png", "naipes/9Copa.png", "naipes/10Copa.png", "naipes/11Copa.png", "naipes/12Copa.png",
-    "naipes/1Espada.png", "naipes/2Espada.png", "naipes/3Espada.png", "naipes/4Espada.png", "naipes/5Espada.png", "naipes/6Espada.png", "naipes/7Espada.png", "naipes/8Espada.png", "naipes/9Espada.png", "naipes/10Espada.png", "naipes/11Espada.png", "naipes/12Espada.png",
-    "naipes/1Baston.png", "naipes/2Baston.png", "naipes/3Baston.png", "naipes/4Baston.png", "naipes/5Baston.png", "naipes/6Baston.png", "naipes/7Baston.png", "naipes/8Baston.png", "naipes/9Baston.png", "naipes/10Baston.png", "naipes/11Baston.png", "naipes/12Baston.png",]; //cards to use
+var new_cards = ["naipes/1-Oro.png", "naipes/2-Oro.png", "naipes/3-Oro.png", "naipes/4-Oro.png", "naipes/5-Oro.png", "naipes/6-Oro.png", "naipes/7-Oro.png", "naipes/8-Oro.png", "naipes/9-Oro.png", "naipes/10-Oro.png", "naipes/11-Oro.png", "naipes/12-Oro.png",
+    "naipes/1-Copa.png", "naipes/2-Copa.png", "naipes/3-Copa.png", "naipes/4-Copa.png", "naipes/5-Copa.png", "naipes/6-Copa.png", "naipes/7-Copa.png", "naipes/8-Copa.png", "naipes/9-Copa.png", "naipes/10-Copa.png", "naipes/11-Copa.png", "naipes/12-Copa.png",
+    "naipes/1-Espada.png", "naipes/2-Espada.png", "naipes/3-Espada.png", "naipes/4-Espada.png", "naipes/5-Espada.png", "naipes/6-Espada.png", "naipes/7-Espada.png", "naipes/8-Espada.png", "naipes/9-Espada.png", "naipes/10-Espada.png", "naipes/11-Espada.png", "naipes/12-Espada.png",
+    "naipes/1-Baston.png", "naipes/2-Baston.png", "naipes/3-Baston.png", "naipes/4-Baston.png", "naipes/5-Baston.png", "naipes/6-Baston.png", "naipes/7-Baston.png", "naipes/8-Baston.png", "naipes/9-Baston.png", "naipes/10-Baston.png", "naipes/11-Baston.png", "naipes/12-Baston.png",]; //cards to use
 var push_cards = []; // cards which are send to players
 
 // shuffle cards
