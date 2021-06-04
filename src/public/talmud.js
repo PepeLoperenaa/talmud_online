@@ -1,4 +1,3 @@
-const alert = "Welcome to the game";
 //client page. each variable is different for every player
 var last_action = "";
 var socket;
@@ -12,6 +11,66 @@ var open_chairs = 1;
 //4: socket.on en el servidor
 // 5:socket.on en el cliente
 
+function prepareGame() {
+    //socket.on = respuesta del servidor para hacer una accion / visualizacion etc.
+    socket = io.connect('http://localhost:3000', {
+        'forceNew': true
+    });
+
+    socket.on('start_game', function (data) {
+        if (open_chairs === 4) {
+            document.getElementById('start').style.visibility = 'hidden';
+            window.alert("The game is about to start");
+        } else {
+            window.alert("There is still open chairs!");
+        }
+        //visibility needs to be hidden for every player too.
+        //on the server it shows that 4 players are connected. now in teh client it does not show.
+    });
+
+    socket.on('game_status', function (data) {
+        game_status = data;
+        enable_buttons(data.turn === me.name);
+    });
+
+    socket.on('error', function (data) {
+        window.alert("Full room!");
+    });
+
+    socket.on('new_status', function (data) {
+        me = data.player_info;
+        renderStatus(data);
+    });
+
+    socket.on('get_card_response', function (data) {
+        me = data;
+        console.log("get_card_response: " + data);
+        updateStatus(data);
+    });
+
+    socket.on('new_pushed_card', function (data) {
+        console.log('new_pushed card ' + data);
+        document.getElementById("oldDeck").style.visibility = "visible";
+        document.getElementById("pushed_card").src = data;
+    });
+
+    socket.on('player_accepted', function (data) {
+        renderNewPlayer();
+    });
+
+    socket.on('response_deck_card', function (data) {
+        console.log("card on deck: " + data);
+        document.getElementById("available_card").src = data;
+        document.getElementById("message").innerHTML = "Change card?";
+        last_action = "showDeck";
+        enable_yes_no_buttons(true);
+    });
+}
+
+function startGame() {
+    socket.emit('start_game');
+}
+
 function renderNewPlayer() { // When new players come in, then their cards are rendered into the game.
     open_chairs++;
     console.log("opened chair number " + open_chairs);
@@ -21,7 +80,6 @@ function renderNewPlayer() { // When new players come in, then their cards are r
 
 function renderStatus(data) {
     console.log(data);
-
 
     for (var i = 1; i <= data.player_info.cards.length; i++) {
         var div = document.getElementById("card" + i);
@@ -72,7 +130,7 @@ function showDeck() {
 function getCard() { //when we get the card, show what the value of the card is before changing it.
     //var new_card = switchCard
     var index = window.prompt("Choose one of your cards (1-" + me.cards.length + ")", "-1");
-    if(index===null || index==="-1") {
+    if (index === null || index === "-1") {
         document.getElementById("available_card").src = "naipes/reves.png";
         return;
     }
@@ -101,50 +159,6 @@ function enable_buttons(active) {
     // enable/disable buttons
 }
 
-function prepareGame() {
-    //socket.on = respuesta del servidor para hacer una accion / visualizacion etc.
-    socket = io.connect('http://localhost:3000', {
-        'forceNew': true
-    });
-
-    socket.on('game_status', function (data) {
-        game_status = data;
-        enable_buttons(data.turn === me.name);
-    });
-
-    socket.on('error', function (data) {
-        window.alert("Full room!");
-    });
-
-    socket.on('new_status', function (data) {
-        me = data.player_info;
-        renderStatus(data);
-    });
-
-    socket.on('get_card_response', function (data) {
-        me = data;
-        console.log("get_card_response: " + data);
-        updateStatus(data);
-    });
-
-    socket.on('new_pushed_card', function (data) {
-        console.log('new_pushed card ' + data);
-        document.getElementById("oldDeck").style.visibility = "visible";
-        document.getElementById("pushed_card").src = data;
-    });
-
-    socket.on('player_accepted', function (data) {
-        renderNewPlayer();
-    });
-
-    socket.on('response_deck_card', function (data) {
-        console.log("card on deck: "+ data);
-        document.getElementById("available_card").src = data;
-        document.getElementById("message").innerHTML = "Change card?";
-        last_action = "showDeck";
-        enable_yes_no_buttons(true);
-    });
-}
 
 function enable_yes_no_buttons(show) {
     document.getElementById("yes").style.visibility = show ? "visible" : "hidden";
@@ -154,7 +168,7 @@ function enable_yes_no_buttons(show) {
 function yes() {
     enable_yes_no_buttons(false);
     document.getElementById("message").innerHTML = ""
-    if(last_action==="showDeck") {
+    if (last_action === "showDeck") {
         getCard();
     }
     last_action = "";
@@ -163,7 +177,7 @@ function yes() {
 function no() {
     enable_yes_no_buttons(false);
     document.getElementById("message").innerHTML = ""
-    if(last_action==="showDeck") {
+    if (last_action === "showDeck") {
         moveCardToPushed();
         document.getElementById("available_card").src = "naipes/reves.png";
     }

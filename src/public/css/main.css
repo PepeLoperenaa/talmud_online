@@ -179,7 +179,7 @@ button {
     color: transparent;
 }
 
-#getCard{
+#getCard {
     background: transparent;
     color: transparent;
     position: absolute;
@@ -187,7 +187,7 @@ button {
     bottom: 80px;
 }
 
-#screamTalmud{
+#screamTalmud {
     background: transparent;
     color: transparent;
     position: absolute;
@@ -195,7 +195,7 @@ button {
     bottom: 80px;
 }
 
-#specialAbility{
+#specialAbility {
     background: transparent;
     color: transparent;
     position: absolute;
@@ -215,6 +215,5 @@ button {
     top: 403px;
     visibility: hidden;
 }
-
 
 

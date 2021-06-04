@@ -28,6 +28,15 @@ app.use(express.static('public'));
 io.on('connection', function (socket) {
     console.log('A user has connected to the server with the ID: ' + socket.id);
     // max 4 players, control...
+
+    socket.on('start_game', function (data) {
+        if (players.length === 4) {
+            console.log("Start playing");
+        } else {
+            console.log("Still players to connect");
+        }
+    });
+
     socket.on('new_player', function (data) {
 
         if (players.length === 4) {
@@ -81,7 +90,7 @@ io.on('connection', function (socket) {
         socket.emit('get_card_response', players[getPlayerIndex(data.player.name)]);
 
         // send all players new pushed card
-        io.emit('new_pushed_card', push_cards[push_cards.length-1]); //enviar informacion a todos (incluido el que manda)
+        io.emit('new_pushed_card', push_cards[push_cards.length - 1]); //enviar informacion a todos (incluido el que manda)
         //socket.emit('new_pushed_card', push_cards[push_cards.length-1]);
         //socket.broadcast.emit('new_pushed_card', push_cards[push_cards.length-1]);
     });
@@ -97,8 +106,8 @@ io.on('connection', function (socket) {
         new_cards.splice(0, 1);
         push_cards.push(card);
         console.log("length new_cards : " + new_cards.length);
-        console.log("new_cards top : " +new_cards[0]);
-        io.emit('new_pushed_card', push_cards[push_cards.length-1]);
+        console.log("new_cards top : " + new_cards[0]);
+        io.emit('new_pushed_card', push_cards[push_cards.length - 1]);
     });
 });
 
@@ -131,7 +140,7 @@ function switchCard(name, index_change) {
 
 // shuffle array of cards
 function shuffle(array) {
-    var currentIndex = array.length,  randomIndex;
+    var currentIndex = array.length, randomIndex;
 
     // While there remain elements to shuffle...
     while (0 !== currentIndex) {
