@@ -8,7 +8,7 @@ var open_chairs = 1;
 //steps 1: funcion en HTMl
 // 2: hacer funcion en cliente
 // 3: socket.emit al servidor
-//4: socket.on en el servidor
+// 4: socket.on en el servidor
 // 5:socket.on en el cliente
 
 function prepareGame() {
@@ -182,4 +182,19 @@ function no() {
         document.getElementById("available_card").src = "naipes/reves.png";
     }
     last_action = "";
+}
+
+function pass_turn(){
+    socket.emit('pass_turn');
+}
+
+function use_special_card(card){
+    if(get_value_of_cards() === card){
+        //2 step process to use the special card and what it does.
+    } //it can even be a switch case and that could help too.
+}
+
+function card_same_value(card){
+    if(get_value_of_cards() === card){
+    } // check if the values are the same. do the HTMl process if thats the case.
 }

@@ -1,22 +1,24 @@
-var express = require('express');
-var app = express();
-var server = require('http').Server(app);
-var io = require('socket.io')(server);
+let express = require('express');
+let app = express();
+let server = require('http').Server(app);
+let io = require('socket.io')(server);
+let current_turn = 0;
+let _turn = 0;
 
 // game status
-var game_status = {
+let game_status = {
     status: "awaiting",
     turn: -1
 };
 
 // players
-var players = []; //need to add 4 players here.
+let players = []; //need to add 4 players here.
 // cards in deck
-var new_cards = ["naipes/1-Oro.png", "naipes/2-Oro.png", "naipes/3-Oro.png", "naipes/4-Oro.png", "naipes/5-Oro.png", "naipes/6-Oro.png", "naipes/7-Oro.png", "naipes/8-Oro.png", "naipes/9-Oro.png", "naipes/10-Oro.png", "naipes/11-Oro.png", "naipes/12-Oro.png",
+let new_cards = ["naipes/1-Oro.png", "naipes/2-Oro.png", "naipes/3-Oro.png", "naipes/4-Oro.png", "naipes/5-Oro.png", "naipes/6-Oro.png", "naipes/7-Oro.png", "naipes/8-Oro.png", "naipes/9-Oro.png", "naipes/10-Oro.png", "naipes/11-Oro.png", "naipes/12-Oro.png",
     "naipes/1-Copa.png", "naipes/2-Copa.png", "naipes/3-Copa.png", "naipes/4-Copa.png", "naipes/5-Copa.png", "naipes/6-Copa.png", "naipes/7-Copa.png", "naipes/8-Copa.png", "naipes/9-Copa.png", "naipes/10-Copa.png", "naipes/11-Copa.png", "naipes/12-Copa.png",
     "naipes/1-Espada.png", "naipes/2-Espada.png", "naipes/3-Espada.png", "naipes/4-Espada.png", "naipes/5-Espada.png", "naipes/6-Espada.png", "naipes/7-Espada.png", "naipes/8-Espada.png", "naipes/9-Espada.png", "naipes/10-Espada.png", "naipes/11-Espada.png", "naipes/12-Espada.png",
     "naipes/1-Baston.png", "naipes/2-Baston.png", "naipes/3-Baston.png", "naipes/4-Baston.png", "naipes/5-Baston.png", "naipes/6-Baston.png", "naipes/7-Baston.png", "naipes/8-Baston.png", "naipes/9-Baston.png", "naipes/10-Baston.png", "naipes/11-Baston.png", "naipes/12-Baston.png",]; //cards to use
-var push_cards = []; // cards which are send to players
+let push_cards = []; // cards which are send to players
 
 // shuffle cards
 shuffle(new_cards);
@@ -27,6 +29,18 @@ app.use(express.static('public'));
 
 io.on('connection', function (socket) {
     console.log('A user has connected to the server with the ID: ' + socket.id);
+    /*players.push(socket);
+    socket.on('pass_turn', function (){
+        nextTurn();
+    })
+
+    socket.on('disconnect', function(){ //disconnect function may be changed.
+        console.log('A player disconnected');
+        players.splice(players.indexOf(socket),1);
+        _turn--;
+        console.log("A number of players now ",players.length);
+    }); */ //this is the turns but this does not work for now.
+
     // max 4 players, control...
 
     socket.on('start_game', function (data) {
@@ -34,7 +48,7 @@ io.on('connection', function (socket) {
             console.log("Start playing");
         } else {
             console.log("Still players to connect");
-        }
+        } //this works on server but not the client.
     });
 
     socket.on('new_player', function (data) {
@@ -156,3 +170,16 @@ function shuffle(array) {
 
     return array;
 }
+
+function get_value_of_cards(){
+    let val = new_cards.toString();
+    for (let i = 0; i < val.length ; i++) {
+        console.log(val);
+    } // it is not the correct way to do it.
+}
+
+/*function nextTurn(){
+    _turn = current_turn++ % players.length;
+    players[_turn].emit('your_turn');
+    console.log("next turn triggered " , _turn);
+}*/ //this is part of the turns.
