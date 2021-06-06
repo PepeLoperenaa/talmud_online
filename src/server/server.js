@@ -123,6 +123,14 @@ io.on('connection', function (socket) {
         console.log("new_cards top : " + new_cards[0]);
         io.emit('new_pushed_card', push_cards[push_cards.length - 1]);
     });
+
+    socket.on('use_special_card', function (data) { //connection into the client
+        socket.emit('hello'); //message to the client
+    });
+
+    socket.on('get_value_of_cards', function (data){ //connection into the client.
+        socket.emit('hello'); //message to the client
+    });
 });
 
 server.listen(3000, function () {

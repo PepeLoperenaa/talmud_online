@@ -65,6 +65,14 @@ function prepareGame() {
         last_action = "showDeck";
         enable_yes_no_buttons(true);
     });
+
+    socket.on('get_value_of_cards', function (data){
+      //what the client needs to do
+    });
+
+    socket.on('use_special_card', function (data){
+      //what the client needs to do
+    });
 }
 
 function startGame() {
@@ -155,6 +163,20 @@ function moveCardToPushed() {
 }
 
 
+function use_special_card(card){
+    socket.emit('use_special_card');
+    //if(get_value_of_cards() === card){
+        //2 step process to use the special card and what it does.
+    //} //it can even be a switch case and that could help too.
+}
+
+function card_same_value(card){
+    socket.emit('get_value_of_cards');
+    //if(get_value_of_cards() === card){
+    //} // check if the values are the same. do the HTMl process if thats the case.
+}
+
+
 function enable_buttons(active) {
     // enable/disable buttons
 }
@@ -184,17 +206,8 @@ function no() {
     last_action = "";
 }
 
-function pass_turn(){
-    socket.emit('pass_turn');
-}
+//function pass_turn(){
+    //socket.emit('pass_turn');
+//}
 
-function use_special_card(card){
-    if(get_value_of_cards() === card){
-        //2 step process to use the special card and what it does.
-    } //it can even be a switch case and that could help too.
-}
 
-function card_same_value(card){
-    if(get_value_of_cards() === card){
-    } // check if the values are the same. do the HTMl process if thats the case.
-}
