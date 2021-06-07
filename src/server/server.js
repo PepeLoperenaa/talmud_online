@@ -113,7 +113,6 @@ io.on('connection', function (socket) {
         } else if (val === 12) {
 
         }
-
         moveToPushed();
         alert_change_turn();
     });

@@ -55,28 +55,24 @@ function prepareGame() {
         // reads card value
         let val = parseInt(data.card.split("/")[1].split("-")[0]);
 
+        document.getElementById("message").innerHTML = "Which action to do?";
+        document.getElementById("changeCard").style.visibility = "visible";
+        document.getElementById("dontChangeCard").style.visibility = "visible";
+
         // if 10,11,12 enable buttons to decide which action to do
 
         // enable button of change card
         // poner 3 botones en html -> quedarte con la carta, devolver la carta o usar habilidad especial
 
         // habilitar siempre botones de quedarte con la carta y devolver la carta
+
         if (val >= 10) {
-            document.getElementById("message").innerHTML = "Which action to do?";
             document.getElementById("specialAbility").style.visibility = "visible";
-            document.getElementById("changeCard").style.visibility = "visible";
-            document.getElementById("dontChangeCard").style.visibility = "visible";
             // habilitar boton habilidad especial
         } else if (val >= 11){
-            document.getElementById("message").innerHTML = "Which action to do?";
             document.getElementById("specialAbility").style.visibility = "visible";
-            document.getElementById("changeCard").style.visibility = "visible";
-            document.getElementById("dontChangeCard").style.visibility = "visible";
         } else if (val >= 12){
-            document.getElementById("message").innerHTML = "Which action to do?";
             document.getElementById("specialAbility").style.visibility = "visible";
-            document.getElementById("changeCard").style.visibility = "visible";
-            document.getElementById("dontChangeCard").style.visibility = "visible";
         }
 
         // boton cambiar carta llamaria a getCard();
