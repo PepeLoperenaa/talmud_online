@@ -1,19 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="/css/main.css">
+    <link href="/css/main.css" rel="stylesheet">
     <meta charset="UTF-8">
     <meta
-            name='viewport'
             content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'
+            name='viewport'
     />
     <script src="/socket.io/socket.io.js"></script>
     <title>Talmud!</title>
 </head>
 <body>
-<div id="startGame">
-    <button id="start" onclick=startGame();><p>Start game</p></button>
-</div>
 <button id="turn" name="button">Next turn</button>
 <div id="player1site">
     <div id="player1">
@@ -21,11 +18,10 @@
             <p>Press to join the table</p>
         </button>
         <button id="showDeck" onclick=showDeck();><p>Get card!</p></button>
-        <!--button id="getCard" onclick=getCard();><p>Get card!</p></button>-->
-        <!--When pressing the button a prompt appears to choose what card to change-->
+        <button id="dontChangeCard" onclick=moveCardToPushed();><p>Don´t change card!</p></button>
+        <button id="changeCard" onclick=getCard();><p>change card!</p></button>
         <!--<button id="screamTalmud" onclick=""><p>Talmud!</p></button> -->
-        <!--<button id="specialAbility" onclick=""><p>Special Ability!</p></button>-->
-
+        <button id="specialAbility" onclick=use_special_card()><p>Special Ability!</p></button>
         <p id="message"></p>
         <button id="yes" onclick=yes();><p>Yes</p></button>
         <button id="no" onclick=no();><p>No</p></button>
@@ -40,38 +36,38 @@
 
 <div id="player2site">
     <div id="player2Cards">
-        <div id="card101"><img src="naipes/reves.png" alt="otherUser"/></div>
-        <div id="card102"><img src="naipes/reves.png" alt="otherUser"/></div>
-        <div id="card103"><img src="naipes/reves.png" alt="otherUser"/></div>
-        <div id="card104"><img src="naipes/reves.png" alt="otherUser"/></div>
+        <div id="card101"><img alt="otherUser" src="naipes/reves.png"/></div>
+        <div id="card102"><img alt="otherUser" src="naipes/reves.png"/></div>
+        <div id="card103"><img alt="otherUser" src="naipes/reves.png"/></div>
+        <div id="card104"><img alt="otherUser" src="naipes/reves.png"/></div>
     </div>
 </div>
 
 <div id="player3site">
     <div id="player3Cards">
-        <div id="card201"><img src="naipes/reves.png" alt="otherUser"/></div>
-        <div id="card202"><img src="naipes/reves.png" alt="otherUser"/></div>
-        <div id="card203"><img src="naipes/reves.png" alt="otherUser"/></div>
-        <div id="card204"><img src="naipes/reves.png" alt="otherUser"/></div>
+        <div id="card201"><img alt="otherUser" src="naipes/reves.png"/></div>
+        <div id="card202"><img alt="otherUser" src="naipes/reves.png"/></div>
+        <div id="card203"><img alt="otherUser" src="naipes/reves.png"/></div>
+        <div id="card204"><img alt="otherUser" src="naipes/reves.png"/></div>
     </div>
 </div>
 
 <div id="player4site">
     <div id="player4Cards">
-        <div id="card301"><img src="naipes/reves.png" alt="otherUser"/></div>
-        <div id="card302"><img src="naipes/reves.png" alt="otherUser"/></div>
-        <div id="card303"><img src="naipes/reves.png" alt="otherUser"/></div>
-        <div id="card304"><img src="naipes/reves.png" alt="otherUser"/></div>
+        <div id="card301"><img alt="otherUser" src="naipes/reves.png"/></div>
+        <div id="card302"><img alt="otherUser" src="naipes/reves.png"/></div>
+        <div id="card303"><img alt="otherUser" src="naipes/reves.png"/></div>
+        <div id="card304"><img alt="otherUser" src="naipes/reves.png"/></div>
     </div>
 </div>
 
 
 <div id="deck" onclick=getCard();>
-    <img src="naipes/reves.png" alt="Other card" id="available_card"/>
+    <img alt="Other card" id="available_card" src="naipes/reves.png"/>
 </div>
 
 <div id="oldDeck">
-    <img src="" alt="used cards" id="pushed_card"/>
+    <img alt="used cards" id="pushed_card" src=""/>
 </div>
 
 <script src="talmud.js"></script>

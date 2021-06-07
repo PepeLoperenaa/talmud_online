@@ -1,34 +1,24 @@
 //client page. each variable is different for every player
-var last_action = "";
-var socket;
-var game_status = {};
-var me = null;
-var open_chairs = 1;
+let last_action = "";
+let socket;
+let game_status = {};
+let me = null;
+let open_chairs = 1;
 
-//steps 1: funcion en HTMl
-// 2: hacer funcion en cliente
-// 3: socket.emit al servidor
-// 4: socket.on en el servidor
-// 5:socket.on en el cliente
+//steps 1: function in HTMl
+// 2: do the function in the client
+// 3: socket.emit to server
+// 4: socket.on en the server
+// 5:socket.on en the client
 
 function prepareGame() {
-    //socket.on = respuesta del servidor para hacer una accion / visualizacion etc.
+    //socket.on = answer of the server to do an action or visualization
     socket = io.connect('http://localhost:3000', {
         'forceNew': true
     });
 
-    socket.on('start_game', function (data) {
-        if (open_chairs === 4) {
-            document.getElementById('start').style.visibility = 'hidden';
-            window.alert("The game is about to start");
-        } else {
-            window.alert("There is still open chairs!");
-        }
-        //visibility needs to be hidden for every player too.
-        //on the server it shows that 4 players are connected. now in teh client it does not show.
-    });
-
     socket.on('game_status', function (data) {
+        console.log(data);
         game_status = data;
         enable_buttons(data.turn === me.name);
     });
@@ -54,30 +44,61 @@ function prepareGame() {
         document.getElementById("pushed_card").src = data;
     });
 
-    socket.on('player_accepted', function (data) {
+    socket.on('player_accepted', function (data) { //do we need data here?
         renderNewPlayer();
     });
 
     socket.on('response_deck_card', function (data) {
-        console.log("card on deck: " + data);
-        document.getElementById("available_card").src = data;
-        document.getElementById("message").innerHTML = "Change card?";
-        last_action = "showDeck";
+        console.log("card on deck: " + data.card);
+        document.getElementById("available_card").src = data.card;
+
+        // reads card value
+        let val = parseInt(data.card.split("/")[1].split("-")[0]);
+
+        // if 10,11,12 enable buttons to decide which action to do
+
+        // enable button of change card
+        // poner 3 botones en html -> quedarte con la carta, devolver la carta o usar habilidad especial
+
+        // habilitar siempre botones de quedarte con la carta y devolver la carta
+        if (val >= 10) {
+            document.getElementById("message").innerHTML = "Which action to do?";
+            document.getElementById("specialAbility").style.visibility = "visible";
+            document.getElementById("changeCard").style.visibility = "visible";
+            document.getElementById("dontChangeCard").style.visibility = "visible";
+            // habilitar boton habilidad especial
+        } else if (val >= 11){
+            document.getElementById("message").innerHTML = "Which action to do?";
+            document.getElementById("specialAbility").style.visibility = "visible";
+            document.getElementById("changeCard").style.visibility = "visible";
+            document.getElementById("dontChangeCard").style.visibility = "visible";
+        } else if (val >= 12){
+            document.getElementById("message").innerHTML = "Which action to do?";
+            document.getElementById("specialAbility").style.visibility = "visible";
+            document.getElementById("changeCard").style.visibility = "visible";
+            document.getElementById("dontChangeCard").style.visibility = "visible";
+        }
+
+        // boton cambiar carta llamaria a getCard();
+        // boton devolver carta llamaria a moveCardToPushed();
+        // boton usar habilidad llamaria a use_special_card(); -- por terminar
+
+        //may be deleted.
+        if (data.action === "showDeck") {
+            document.getElementById("message").innerHTML = "Change card?";
+        } else if (data.action === "specialAbility") {
+            document.getElementById("message").innerHTML = "Use card as special ability?";
+        }
+        last_action = data.action;
         enable_yes_no_buttons(true);
     });
 
-    socket.on('get_value_of_cards', function (data){
-      //what the client needs to do
-    });
 
-    socket.on('use_special_card', function (data){
-      //what the client needs to do
+    socket.on('use_special_card', function (data) {
+
     });
 }
 
-function startGame() {
-    socket.emit('start_game');
-}
 
 function renderNewPlayer() { // When new players come in, then their cards are rendered into the game.
     open_chairs++;
@@ -132,7 +153,11 @@ function playerOn() {
 
 function showDeck() {
     // request view deck card
-    socket.emit('request_deck_card', ""); //esto es lo que se envia al servidor
+    socket.emit('request_deck_card', "showDeck"); //what is sent to the server.
+}
+
+function specialAbility() {
+    socket.emit('request_deck_card', "specialAbility");
 }
 
 function getCard() { //when we get the card, show what the value of the card is before changing it.
@@ -159,26 +184,16 @@ function getCard() { //when we get the card, show what the value of the card is 
 
 function moveCardToPushed() {
     socket.emit('move_card_to_pushed', "");
-    //socket.emit = hacer llamada al servidor
+    //socket.emit = do the call to the server
 }
 
 
-function use_special_card(card){
-    socket.emit('use_special_card');
-    //if(get_value_of_cards() === card){
-        //2 step process to use the special card and what it does.
-    //} //it can even be a switch case and that could help too.
+function use_special_card() {
+    socket.emit('use_special_card', '');
 }
-
-function card_same_value(card){
-    socket.emit('get_value_of_cards');
-    //if(get_value_of_cards() === card){
-    //} // check if the values are the same. do the HTMl process if thats the case.
-}
-
 
 function enable_buttons(active) {
-    // enable/disable buttons
+    document.getElementById("showDeck").style.visibility = active ? "visible" : "hidden";
 }
 
 
@@ -189,9 +204,11 @@ function enable_yes_no_buttons(show) {
 
 function yes() {
     enable_yes_no_buttons(false);
-    document.getElementById("message").innerHTML = ""
+    document.getElementById("message").innerHTML = "";
     if (last_action === "showDeck") {
         getCard();
+    } else if (last_action === "specialAbility") {
+        use_special_card();
     }
     last_action = "";
 }
@@ -199,15 +216,10 @@ function yes() {
 function no() {
     enable_yes_no_buttons(false);
     document.getElementById("message").innerHTML = ""
-    if (last_action === "showDeck") {
+    if (last_action === "showDeck" || last_action === "specialAbility") {
         moveCardToPushed();
         document.getElementById("available_card").src = "naipes/reves.png";
     }
     last_action = "";
 }
-
-//function pass_turn(){
-    //socket.emit('pass_turn');
-//}
-
 

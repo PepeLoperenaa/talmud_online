@@ -216,4 +216,28 @@ button {
     visibility: hidden;
 }
 
+#yes {
+    visibility: hidden;
+}
+
+#no {
+    visibility: hidden;
+}
+
+#showDeck {
+    visibility: hidden;
+}
+
+#specialAbility {
+    visibility: hidden;
+}
+
+#changeCard {
+    visibility: hidden;
+}
+
+#dontChangeCard {
+    visibility: hidden;
+}
+
 
