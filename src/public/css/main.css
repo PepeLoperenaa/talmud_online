@@ -218,11 +218,11 @@ button {
 
 #yes {
     visibility: hidden;
-}
+} /*May not be needed*/
 
 #no {
     visibility: hidden;
-}
+} /*May not be needed*/
 
 #showDeck {
     visibility: hidden;

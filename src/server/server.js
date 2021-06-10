@@ -178,7 +178,7 @@ function moveToPushed() {
     var card = new_cards[0];
     new_cards.splice(0, 1);
     push_cards.push(card);
-    io.emit('new_pushed_card', push_cards[push_cards.length - 1]);
+    io.emit('new_pushed_card', push_cards[push_cards.length - 1]); //do we change the visibility here?
 }
 
 // shuffle array of cards

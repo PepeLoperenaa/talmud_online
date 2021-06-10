@@ -55,46 +55,27 @@ function prepareGame() {
         // reads card value
         let val = parseInt(data.card.split("/")[1].split("-")[0]);
 
+        document.getElementById("changeCard").style.visibility = "visible"; //need to make them disappear after use.
+        document.getElementById("dontChangeCard").style.visibility = "visible"; //problem when pushing as we can see the old value.
         document.getElementById("message").innerHTML = "Which action to do?";
-        document.getElementById("changeCard").style.visibility = "visible";
-        document.getElementById("dontChangeCard").style.visibility = "visible";
-
-        // if 10,11,12 enable buttons to decide which action to do
-
-        // enable button of change card
-        // poner 3 botones en html -> quedarte con la carta, devolver la carta o usar habilidad especial
 
         // habilitar siempre botones de quedarte con la carta y devolver la carta
+        // need to make it visible and invisible when the client finishes.
 
         if (val >= 10) {
-            document.getElementById("specialAbility").style.visibility = "visible";
-            // habilitar boton habilidad especial
+            document.getElementById('specialAbility').style.visibility = "visible";
         } else if (val >= 11){
-            document.getElementById("specialAbility").style.visibility = "visible";
+            document.getElementById('specialAbility').style.visibility = "visible";
         } else if (val >= 12){
-            document.getElementById("specialAbility").style.visibility = "visible";
+            document.getElementById('specialAbility').style.visibility = "visible";
         }
 
-        // boton cambiar carta llamaria a getCard();
-        // boton devolver carta llamaria a moveCardToPushed();
-        // boton usar habilidad llamaria a use_special_card(); -- por terminar
-
-        //may be deleted.
-        if (data.action === "showDeck") {
-            document.getElementById("message").innerHTML = "Change card?";
-        } else if (data.action === "specialAbility") {
-            document.getElementById("message").innerHTML = "Use card as special ability?";
-        }
-        last_action = data.action;
-        enable_yes_no_buttons(true);
+        // boton usar habilidad llamaria a use_special_card(); -- por terminar funcionalidad
     });
-
 
     socket.on('use_special_card', function (data) {
-
     });
 }
-
 
 function renderNewPlayer() { // When new players come in, then their cards are rendered into the game.
     open_chairs++;
@@ -183,7 +164,6 @@ function moveCardToPushed() {
     //socket.emit = do the call to the server
 }
 
-
 function use_special_card() {
     socket.emit('use_special_card', '');
 }
@@ -193,12 +173,12 @@ function enable_buttons(active) {
 }
 
 
-function enable_yes_no_buttons(show) {
+/*function enable_yes_no_buttons(show) {
     document.getElementById("yes").style.visibility = show ? "visible" : "hidden";
     document.getElementById("no").style.visibility = show ? "visible" : "hidden";
-}
+}*/
 
-function yes() {
+/*function yes() {
     enable_yes_no_buttons(false);
     document.getElementById("message").innerHTML = "";
     if (last_action === "showDeck") {
@@ -207,9 +187,9 @@ function yes() {
         use_special_card();
     }
     last_action = "";
-}
+}*/
 
-function no() {
+/*function no() {
     enable_yes_no_buttons(false);
     document.getElementById("message").innerHTML = ""
     if (last_action === "showDeck" || last_action === "specialAbility") {
@@ -217,5 +197,5 @@ function no() {
         document.getElementById("available_card").src = "naipes/reves.png";
     }
     last_action = "";
-}
+}*/
 
