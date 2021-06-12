@@ -20,7 +20,10 @@ function prepareGame() {
     socket.on('game_status', function (data) {
         console.log(data);
         game_status = data;
-        enable_buttons(data.turn === me.name);
+        if(data.turn === me.name)
+            gained_turn();
+        else
+            lost_turn();
     });
 
     socket.on('error', function (data) {
@@ -29,7 +32,7 @@ function prepareGame() {
 
     socket.on('new_status', function (data) {
         me = data.player_info;
-        renderStatus(data);
+        renderStatus(data); //TODO: ver si de verdad hemos recibido lo que es (special card 11) console.log
     });
 
     socket.on('get_card_response', function (data) {
@@ -40,7 +43,8 @@ function prepareGame() {
 
     socket.on('new_pushed_card', function (data) {
         console.log('new_pushed card ' + data);
-        document.getElementById("oldDeck").style.visibility = "visible";
+        document.getElementById("oldDeck").style.visibility = 'visible';
+        document.getElementById("available_card").src = 'naipes/reves.png';
         document.getElementById("pushed_card").src = data;
     });
 
@@ -63,11 +67,7 @@ function prepareGame() {
         // need to make it visible and invisible when the client finishes.
 
         if (val >= 10) {
-            document.getElementById('specialAbility').style.visibility = "visible";
-        } else if (val >= 11){
-            document.getElementById('specialAbility').style.visibility = "visible";
-        } else if (val >= 12){
-            document.getElementById('specialAbility').style.visibility = "visible";
+            document.getElementById('specialAbility').style.visibility = "visible"; //need to make them disappear after use.
         }
 
         // boton usar habilidad llamaria a use_special_card(); -- por terminar funcionalidad
@@ -165,12 +165,63 @@ function moveCardToPushed() {
 }
 
 function use_special_card() {
-    socket.emit('use_special_card', '');
+    console.log("use_special_card");
+    let card = document.getElementById("available_card").src;
+    let last_index_bar = card.lastIndexOf("/");
+    console.log("last bar: " + last_index_bar);
+    card = card.substring(last_index_bar+1);
+    console.log(card);
+    let val = parseInt(card.split("-")[0]);
+    console.log("val:"+val);
+    if(val===10) {
+        socket.emit('use_special_card', '');
+    }
+    else if(val===11) {
+        let id_players = "";
+        let my_id = parseInt(me.name.split("_")[1]);
+        for(let i=1;i<=4;i++) {
+            if(i!==my_id)
+                id_players+= (i+",");
+        }
+        id_players = id_players.replace(/,\s*$/, "");
+
+        var target_player = window.prompt("Choose one of your opponents ("+id_players+")", "-1");
+        if (target_player === null || target_player === "-1" || target_player===""+my_id) {
+            document.getElementById("available_card").src = "naipes/reves.png";
+            return;
+        }
+        target_player = parseInt(target_player) - 1;
+
+        var index = window.prompt("Choose one of your cards (1-" + me.cards.length + ")", "-1");
+        if (index === null || index === "-1") {
+            document.getElementById("available_card").src = "naipes/reves.png";
+            return;
+        }
+
+        index = parseInt(index) - 1;
+
+        let change = {
+            card_index: index,
+            target_player: target_player
+        }
+
+        socket.emit('use_special_card', change); //use spacial card against index player
+    }
 }
 
-function enable_buttons(active) {
-    document.getElementById("showDeck").style.visibility = active ? "visible" : "hidden";
+function gained_turn() {
+    document.getElementById("showDeck").style.visibility = "visible";
 }
+
+function lost_turn() {
+    console.log("lost turn");
+    document.getElementById("showDeck").style.visibility = "hidden";
+    document.getElementById("dontChangeCard").style.visibility = "hidden";
+    document.getElementById("changeCard").style.visibility = "hidden";
+    document.getElementById("specialAbility").style.visibility = "hidden";
+    document.getElementById("message").style.visibility = "hidden";
+}
+
 
 
 /*function enable_yes_no_buttons(show) {

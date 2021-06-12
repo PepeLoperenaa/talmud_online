@@ -51,7 +51,7 @@ io.on('connection', function (socket) {
         }
 
         var new_player = {
-            name: "player" + players.length,
+            name: "player_" + players.length,
             socket: socket.id,
             cards: c
         }
@@ -109,6 +109,25 @@ io.on('connection', function (socket) {
             socket.emit('new_status', info);
 
         } else if (val === 11) {
+            let target_player = data.target_player;
+            let card_index = data.card_index;
+            changeCards(target_player, card_index);
+
+            var info = {
+                num_players: players.length,
+                player_info: players[_current_turn]
+            }
+
+            // TODO: mirar esto...
+            socket.emit('new_status', info);
+
+            var info2 = {
+                num_players: players.length,
+                player_info: players[target_player]
+            }
+
+            // TODO: verificar que este jugador recibe lo que se envia
+            socket.broadcast.to(players[target_player].socket).emit('new_status', info2);
 
         } else if (val === 12) {
 
@@ -144,7 +163,6 @@ io.on('connection', function (socket) {
         //reconocer el valor de esa carta.
 
     });
-
 });
 
 server.listen(3000, function () {
@@ -179,6 +197,24 @@ function moveToPushed() {
     new_cards.splice(0, 1);
     push_cards.push(card);
     io.emit('new_pushed_card', push_cards[push_cards.length - 1]); //do we change the visibility here?
+}
+
+function changeCards(target_player, card_index) {
+    let random_index = Math.floor(Math.random() * 4); // 0-3
+
+    let target_card = players[target_player].cards[random_index];
+    let user_card = players[_current_turn].cards[card_index];
+
+    console.log("current :" + _current_turn + "/ target: " + target_player);
+    console.log("my card: " + user_card.value);
+    console.log("target card: " + target_card.value);
+    console.log("random index: " + random_index);
+
+    //TODO: remember if received card is visible or invisible!!
+
+    //TODO: ver con consoles que las cartas de ambos realmente se han intercambiado, con consoles
+    players[_current_turn].cards[card_index] = target_card;
+    players[target_player].cards[random_index] = user_card;
 }
 
 // shuffle array of cards
