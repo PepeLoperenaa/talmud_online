@@ -126,6 +126,10 @@ function prepareGame() {
         document.getElementById(imgName).src = data.card_value;
 
     });
+
+    socket.on('scream_talmud', function (data){
+
+    });
 }
 
 function renderNewPlayer() { // When new players come in, then their cards are rendered into the game.
@@ -288,6 +292,10 @@ function use_special_card() {
     }
 }
 
+function screamTalmud(){
+    socket.emit('screamTalmud')
+}
+
 function gained_turn() {
     document.getElementById("showDeck").style.visibility = "visible";
 }
@@ -299,5 +307,6 @@ function lost_turn() {
     document.getElementById("changeCard").style.visibility = "hidden";
     document.getElementById("specialAbility").style.visibility = "hidden";
     document.getElementById("message").style.visibility = "hidden";
+    document.getElementById("screamTalmud").style.visibility = "hidden";
 }
 

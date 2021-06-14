@@ -11,8 +11,8 @@ let game_status = {
 };
 
 // players
-let players = []; //need to add 4 players here.
-// cards in deck
+let players = [];
+
 let new_cards = ["naipes/1-Oro.png", "naipes/2-Oro.png", "naipes/3-Oro.png", "naipes/4-Oro.png", "naipes/5-Oro.png", "naipes/6-Oro.png", "naipes/7-Oro.png", "naipes/8-Oro.png", "naipes/9-Oro.png", "naipes/10-Oro.png", "naipes/11-Oro.png", "naipes/12-Oro.png",
     "naipes/1-Copa.png", "naipes/2-Copa.png", "naipes/3-Copa.png", "naipes/4-Copa.png", "naipes/5-Copa.png", "naipes/6-Copa.png", "naipes/7-Copa.png", "naipes/8-Copa.png", "naipes/9-Copa.png", "naipes/10-Copa.png", "naipes/11-Copa.png", "naipes/12-Copa.png",
     "naipes/1-Espada.png", "naipes/2-Espada.png", "naipes/3-Espada.png", "naipes/4-Espada.png", "naipes/5-Espada.png", "naipes/6-Espada.png", "naipes/7-Espada.png", "naipes/8-Espada.png", "naipes/9-Espada.png", "naipes/10-Espada.png", "naipes/11-Espada.png", "naipes/12-Espada.png",
@@ -23,7 +23,6 @@ let push_cards = []; // playable cards
 shuffle(new_cards);
 
 app.use(express.static('public'));
-
 
 io.on('connection', function (socket) {
     console.log('A user has connected to the server with the ID: ' + socket.id);
@@ -85,7 +84,6 @@ io.on('connection', function (socket) {
 
     socket.on('use_special_card', function (data) {
         let card = new_cards[0]; // view which card is on top
-        console.log("Card on top: " + card);
         let val = parseInt(card.split("/")[1].split("-")[0]);
         let done = false;
         if (val === 10) {
@@ -175,6 +173,10 @@ io.on('connection', function (socket) {
 
         moveToPushed();
         alert_change_turn();
+    });
+
+    socket.on('scream_talmud', function (data){
+        console.log("Player is finishing")
     });
 });
 
