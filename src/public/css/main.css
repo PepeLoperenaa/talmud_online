@@ -167,13 +167,6 @@ button {
     top: 330px;
 }
 
-/*#dot { This will be used when the player comes into the game. will use this as a reference.
-    height: 25px;
-    width: 25px;
-    background-color: black;
-    display: inline-block;
-}*/
-
 #onlinePlayer {
     background: transparent;
     color: transparent;
@@ -216,14 +209,6 @@ button {
     visibility: hidden;
 }
 
-#yes {
-    visibility: hidden;
-} /*May not be needed*/
-
-#no {
-    visibility: hidden;
-} /*May not be needed*/
-
 #showDeck {
     visibility: hidden;
 }
@@ -237,6 +222,10 @@ button {
 }
 
 #dontChangeCard {
+    visibility: hidden;
+}
+
+#specialAbility {
     visibility: hidden;
 }
 

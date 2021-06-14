@@ -20,7 +20,7 @@ function prepareGame() {
     socket.on('game_status', function (data) {
         console.log(data);
         game_status = data;
-        if(data.turn === me.name)
+        if (data.turn === me.name)
             gained_turn();
         else
             lost_turn();
@@ -32,7 +32,9 @@ function prepareGame() {
 
     socket.on('new_status', function (data) {
         me = data.player_info;
-        renderStatus(data); //TODO: ver si de verdad hemos recibido lo que es (special card 11) console.log
+        renderStatus(data);
+        console.log(data.player_info);
+        console.log(data);
     });
 
     socket.on('get_card_response', function (data) {
@@ -48,7 +50,7 @@ function prepareGame() {
         document.getElementById("pushed_card").src = data;
     });
 
-    socket.on('player_accepted', function (data) { //do we need data here?
+    socket.on('player_accepted', function (data) {
         renderNewPlayer();
     });
 
@@ -59,21 +61,70 @@ function prepareGame() {
         // reads card value
         let val = parseInt(data.card.split("/")[1].split("-")[0]);
 
-        document.getElementById("changeCard").style.visibility = "visible"; //need to make them disappear after use.
-        document.getElementById("dontChangeCard").style.visibility = "visible"; //problem when pushing as we can see the old value.
+        document.getElementById("changeCard").style.visibility = "visible";
+        document.getElementById("dontChangeCard").style.visibility = "visible";
         document.getElementById("message").innerHTML = "Which action to do?";
 
-        // habilitar siempre botones de quedarte con la carta y devolver la carta
-        // need to make it visible and invisible when the client finishes.
 
         if (val >= 10) {
             document.getElementById('specialAbility').style.visibility = "visible"; //need to make them disappear after use.
         }
-
-        // boton usar habilidad llamaria a use_special_card(); -- por terminar funcionalidad
     });
 
-    socket.on('use_special_card', function (data) {
+    socket.on('visualize_card', function (data) {
+        console.log("visualize card");
+        console.log(data);
+        var imgName = "";
+        if (me.name === "player_1") {
+            imgName = "_card" + (data.player_index - 1) + "0" + data.card_index;
+        } else if (me.name === "player_2") {
+            if (data.player_index === 3) {
+                imgName = "_card10" + data.card_index;
+            } else if (data.player_index === 4) {
+                imgName = "_card20" + data.card_index;
+            } else if (data.player_index === 4) {
+                imgName = "_card30" + data.card_index;
+            }
+        } else if (me.name === "player_3") {
+            if (data.player_index === 4) {
+                imgName = "_card10" + data.card_index;
+            } else if (data.player_index === 1) {
+                imgName = "_card20" + data.card_index;
+            } else if (data.player_index === 2) {
+                imgName = "_card30" + data.card_index;
+            }
+        } else if (me.name === "player_4") {
+            imgName = "_card" + (data.player_index) + "0" + data.card_index;
+        }
+        console.log("imgName:" + imgName);
+
+        var observer = new MutationObserver(function (mutations) {
+            mutations.forEach(function (mutation) {
+                if (mutation.type === data.card_index.status) {
+                    let accept = confirm("Do you want to change this card?");
+                    if (accept === true) {
+                        let index = prompt("Choose one of your cards (1-4)");
+
+                        let info = {
+                            my_index: index - 1,
+                            card_index: data.card_index - 1,
+                            player_index: data.player_index - 1
+                        }
+                        document.getElementById(imgName).src = 'naipes/reves.png';
+                        socket.emit('use_12_card', info);
+                    } else {
+                        document.getElementById(imgName).src = 'naipes/reves.png';
+                        moveCardToPushed();
+                    }
+                }
+            });
+        });
+
+        observer.observe(data.card_index.status, {
+            attributes: true //configure it to listen to attribute changes
+        });
+        document.getElementById(imgName).src = data.card_value;
+
     });
 }
 
@@ -152,7 +203,7 @@ function getCard() { //when we get the card, show what the value of the card is 
         index_change: index
     }
 
-    // hide again deck
+    // hide deck again
     document.getElementById("available_card").src = "naipes/reves.png";
 
     socket.emit('get_card', change);
@@ -165,34 +216,62 @@ function moveCardToPushed() {
 }
 
 function use_special_card() {
-    console.log("use_special_card");
     let card = document.getElementById("available_card").src;
     let last_index_bar = card.lastIndexOf("/");
-    console.log("last bar: " + last_index_bar);
-    card = card.substring(last_index_bar+1);
-    console.log(card);
+    card = card.substring(last_index_bar + 1);
     let val = parseInt(card.split("-")[0]);
-    console.log("val:"+val);
-    if(val===10) {
+    if (val === 10) {
         socket.emit('use_special_card', '');
-    }
-    else if(val===11) {
+    } else if (val === 11) {
         let id_players = "";
         let my_id = parseInt(me.name.split("_")[1]);
-        for(let i=1;i<=4;i++) {
-            if(i!==my_id)
-                id_players+= (i+",");
+        console.log("My ID: " + my_id);
+        for (let i = 1; i <= 4; i++) {
+            if (i !== my_id)
+                id_players += (i + ",");
         }
         id_players = id_players.replace(/,\s*$/, "");
 
-        var target_player = window.prompt("Choose one of your opponents ("+id_players+")", "-1");
-        if (target_player === null || target_player === "-1" || target_player===""+my_id) {
+        var target_player = window.prompt("Choose one of your opponents (" + id_players + ")", "-1");
+        if (target_player === null || target_player === "-1" || target_player === "" + my_id) {
             document.getElementById("available_card").src = "naipes/reves.png";
             return;
         }
         target_player = parseInt(target_player) - 1;
 
         var index = window.prompt("Choose one of your cards (1-" + me.cards.length + ")", "-1");
+        if (index === null || index === "-1") {
+            document.getElementById("available_card").src = "naipes/reves.png";
+            return;
+        }
+
+        index = parseInt(index) - 1;
+
+        let change = {
+            card_index: index,
+            target_player: target_player
+        }
+
+        socket.emit('use_special_card', change); //use special card against index player
+
+    } else if (val === 12) {
+        let id_players = "";
+        let my_id = parseInt(me.name.split("_")[1]);
+        console.log("My ID: " + my_id);
+        for (let i = 1; i <= 4; i++) {
+            if (i !== my_id)
+                id_players += (i + ",");
+        }
+        id_players = id_players.replace(/,\s*$/, "");
+
+        var target_player = window.prompt("Choose one of your opponents (" + id_players + ")", "-1");
+        if (target_player === null || target_player === "-1" || target_player === "" + my_id) {
+            document.getElementById("available_card").src = "naipes/reves.png";
+            return;
+        }
+        target_player = parseInt(target_player) - 1;
+
+        var index = window.prompt("Choose one his cards (1-" + me.cards.length + ")", "-1");
         if (index === null || index === "-1") {
             document.getElementById("available_card").src = "naipes/reves.png";
             return;
@@ -221,32 +300,4 @@ function lost_turn() {
     document.getElementById("specialAbility").style.visibility = "hidden";
     document.getElementById("message").style.visibility = "hidden";
 }
-
-
-
-/*function enable_yes_no_buttons(show) {
-    document.getElementById("yes").style.visibility = show ? "visible" : "hidden";
-    document.getElementById("no").style.visibility = show ? "visible" : "hidden";
-}*/
-
-/*function yes() {
-    enable_yes_no_buttons(false);
-    document.getElementById("message").innerHTML = "";
-    if (last_action === "showDeck") {
-        getCard();
-    } else if (last_action === "specialAbility") {
-        use_special_card();
-    }
-    last_action = "";
-}*/
-
-/*function no() {
-    enable_yes_no_buttons(false);
-    document.getElementById("message").innerHTML = ""
-    if (last_action === "showDeck" || last_action === "specialAbility") {
-        moveCardToPushed();
-        document.getElementById("available_card").src = "naipes/reves.png";
-    }
-    last_action = "";
-}*/
 

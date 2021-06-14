@@ -17,18 +17,16 @@ let new_cards = ["naipes/1-Oro.png", "naipes/2-Oro.png", "naipes/3-Oro.png", "na
     "naipes/1-Copa.png", "naipes/2-Copa.png", "naipes/3-Copa.png", "naipes/4-Copa.png", "naipes/5-Copa.png", "naipes/6-Copa.png", "naipes/7-Copa.png", "naipes/8-Copa.png", "naipes/9-Copa.png", "naipes/10-Copa.png", "naipes/11-Copa.png", "naipes/12-Copa.png",
     "naipes/1-Espada.png", "naipes/2-Espada.png", "naipes/3-Espada.png", "naipes/4-Espada.png", "naipes/5-Espada.png", "naipes/6-Espada.png", "naipes/7-Espada.png", "naipes/8-Espada.png", "naipes/9-Espada.png", "naipes/10-Espada.png", "naipes/11-Espada.png", "naipes/12-Espada.png",
     "naipes/1-Baston.png", "naipes/2-Baston.png", "naipes/3-Baston.png", "naipes/4-Baston.png", "naipes/5-Baston.png", "naipes/6-Baston.png", "naipes/7-Baston.png", "naipes/8-Baston.png", "naipes/9-Baston.png", "naipes/10-Baston.png", "naipes/11-Baston.png", "naipes/12-Baston.png",]; //cards to use
-let push_cards = []; // cards which are send to players
+let push_cards = []; // playable cards
 
 // shuffle cards
 shuffle(new_cards);
-//make the cards objects to get the value of the different cards easier.
 
 app.use(express.static('public'));
 
 
 io.on('connection', function (socket) {
     console.log('A user has connected to the server with the ID: ' + socket.id);
-    // max 4 players, control...
     socket.on('new_player', function (data) {
 
         if (players.length === 4) {
@@ -47,11 +45,10 @@ io.on('connection', function (socket) {
             c.push(card);
             // remove from deck
             new_cards.splice(pos, 1);
-            //console.log("Remaining cards: "+new_cards.length);
         }
 
         var new_player = {
-            name: "player_" + players.length,
+            name: "player_" + (players.length + 1),
             socket: socket.id,
             cards: c
         }
@@ -65,10 +62,9 @@ io.on('connection', function (socket) {
         }
 
         // send him info and cards
-        socket.emit('new_status', info); //especificamente el que se ha comunicado con el servidor
+        socket.emit('new_status', info);//message to specifically the one which communicates with the server
         // send rest player accepted
-        socket.broadcast.emit('player_accepted', ""); //broadcast = todos los clientes menos el que se ha comunicado
-
+        socket.broadcast.emit('player_accepted', "");//send info to all of the players except to the one which sends info to the server
         if (players.length === 4) {
             game_status.status = "started";
             _current_turn = 0
@@ -83,7 +79,7 @@ io.on('connection', function (socket) {
         socket.emit('get_card_response', players[getPlayerIndex(data.player.name)]);
 
         // send all players new pushed card
-        io.emit('new_pushed_card', push_cards[push_cards.length - 1]); //enviar informacion a todos (incluido el que manda)
+        io.emit('new_pushed_card', push_cards[push_cards.length - 1]); //send information to all players
         alert_change_turn();
     });
 
@@ -118,19 +114,28 @@ io.on('connection', function (socket) {
                 player_info: players[_current_turn]
             }
 
-            // TODO: mirar esto...
             socket.emit('new_status', info);
+            console.log(info);
 
             var info2 = {
                 num_players: players.length,
                 player_info: players[target_player]
             }
 
-            // TODO: verificar que este jugador recibe lo que se envia
             socket.broadcast.to(players[target_player].socket).emit('new_status', info2);
+            console.log(players[target_player]);
+            console.log(info2);
 
         } else if (val === 12) {
-
+            let target_player = data.target_player;
+            let card_index = data.card_index;
+            let target_card = players[target_player].cards[card_index];
+            var info = {
+                player_index: target_player + 1,
+                card_index: card_index + 1,
+                card_value: target_card.value
+            }
+            socket.emit('visualize_card', info);
         }
         moveToPushed();
         alert_change_turn();
@@ -142,8 +147,6 @@ io.on('connection', function (socket) {
             action: data
         }
         socket.emit('response_deck_card', info);
-        //socket.on hace la la tarea que sea con la informacion pasada
-        //y responde lo que tenga que saber al cliente para poder actualizar lo que ve el cliente.
     });
 
     socket.on('move_card_to_pushed', function (data) {
@@ -151,17 +154,27 @@ io.on('connection', function (socket) {
         alert_change_turn();
     });
 
-    socket.on('use_special_card', function (data) {
+    socket.on('use_12_card', function (data) {
+        console.log("Use 12 card!!");
+        changeCards_12(data.player_index, data.card_index, data.my_index);
 
-        //boton get card
-        // cogemos valor de esa carta
-        // 10 = otra de sus cartas es visible. (card3)
-        // 11 = cambio de carta con otro jugador sin saber el valor
-        // 12 = cambio de carta viendo el valor de la carta del otro jugador.
+        var info = {
+            num_players: players.length,
+            player_info: players[_current_turn]
+        }
 
-        //if (10||11||12) = opcion de utilzar el special card o de dejar la carta como otras.
-        //reconocer el valor de esa carta.
+        socket.emit('new_status', info);
+        console.log(info);
 
+        var info2 = {
+            num_players: players.length,
+            player_info: players[data.player_index]
+        }
+
+        socket.broadcast.to(players[data.player_index].socket).emit('new_status', info2);
+
+        moveToPushed();
+        alert_change_turn();
     });
 });
 
@@ -196,7 +209,7 @@ function moveToPushed() {
     var card = new_cards[0];
     new_cards.splice(0, 1);
     push_cards.push(card);
-    io.emit('new_pushed_card', push_cards[push_cards.length - 1]); //do we change the visibility here?
+    io.emit('new_pushed_card', push_cards[push_cards.length - 1]);
 }
 
 function changeCards(target_player, card_index) {
@@ -205,16 +218,20 @@ function changeCards(target_player, card_index) {
     let target_card = players[target_player].cards[random_index];
     let user_card = players[_current_turn].cards[card_index];
 
-    console.log("current :" + _current_turn + "/ target: " + target_player);
-    console.log("my card: " + user_card.value);
-    console.log("target card: " + target_card.value);
-    console.log("random index: " + random_index);
-
-    //TODO: remember if received card is visible or invisible!!
-
-    //TODO: ver con consoles que las cartas de ambos realmente se han intercambiado, con consoles
     players[_current_turn].cards[card_index] = target_card;
+    players[_current_turn].cards[card_index].status = "hidden";
     players[target_player].cards[random_index] = user_card;
+    players[target_player].cards[random_index].status = "hidden";
+}
+
+function changeCards_12(target_player, card_index, my_index) {
+    let target_card = players[target_player].cards[card_index];
+    let user_card = players[_current_turn].cards[my_index];
+
+    players[_current_turn].cards[card_index] = target_card;
+    players[_current_turn].cards[card_index].status = "hidden";
+    players[target_player].cards[my_index] = user_card;
+    players[target_player].cards[my_index].status = "visible";
 }
 
 // shuffle array of cards
