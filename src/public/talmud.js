@@ -122,13 +122,21 @@ function prepareGame() {
 
         observer.observe(data.card_index.status, {
             attributes: true //configure it to listen to attribute changes
-        });
+        }); //TODO: try and understand observer so that 12 functionality works.
         document.getElementById(imgName).src = data.card_value;
 
     });
 
     socket.on('scream_talmud', function (data){
+        me = data.player_info
 
+        if (me > 5){
+            alert("You have won the game");
+            socket.disconnect()
+        } else{
+            alert("You have not won the game");
+        }
+        //TODO: Finish Scream Talmud functionality
     });
 }
 
@@ -293,7 +301,7 @@ function use_special_card() {
 }
 
 function screamTalmud(){
-    socket.emit('screamTalmud')
+    socket.emit('screamTalmud');
 }
 
 function gained_turn() {

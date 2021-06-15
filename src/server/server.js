@@ -176,8 +176,14 @@ io.on('connection', function (socket) {
     });
 
     socket.on('scream_talmud', function (data){
-        console.log("Player is finishing")
-    });
+        let val = parseInt(new_cards.split("/")[1].split("-")[0]);
+
+        var info_player = {
+            player_cards: new_cards
+        }
+        console.log("Game is about to end")
+        alert_change_turn();
+    }); //TODO: Finish Scream Talmud functionality
 });
 
 server.listen(3000, function () {
