@@ -4,6 +4,7 @@ let socket;
 let game_status = {};
 let me = null;
 let open_chairs = 1;
+let talmud_base_mark = 5;
 
 //steps 1: function in HTMl
 // 2: do the function in the client
@@ -71,72 +72,21 @@ function prepareGame() {
         }
     });
 
-    socket.on('visualize_card', function (data) {
-        console.log("visualize card");
-        console.log(data);
-        var imgName = "";
-        if (me.name === "player_1") {
-            imgName = "_card" + (data.player_index - 1) + "0" + data.card_index;
-        } else if (me.name === "player_2") {
-            if (data.player_index === 3) {
-                imgName = "_card10" + data.card_index;
-            } else if (data.player_index === 4) {
-                imgName = "_card20" + data.card_index;
-            } else if (data.player_index === 4) {
-                imgName = "_card30" + data.card_index;
-            }
-        } else if (me.name === "player_3") {
-            if (data.player_index === 4) {
-                imgName = "_card10" + data.card_index;
-            } else if (data.player_index === 1) {
-                imgName = "_card20" + data.card_index;
-            } else if (data.player_index === 2) {
-                imgName = "_card30" + data.card_index;
-            }
-        } else if (me.name === "player_4") {
-            imgName = "_card" + (data.player_index) + "0" + data.card_index;
-        }
-        console.log("imgName:" + imgName);
-
-        var observer = new MutationObserver(function (mutations) {
-            mutations.forEach(function (mutation) {
-                if (mutation.type === data.card_index.status) {
-                    let accept = confirm("Do you want to change this card?");
-                    if (accept === true) {
-                        let index = prompt("Choose one of your cards (1-4)");
-
-                        let info = {
-                            my_index: index - 1,
-                            card_index: data.card_index - 1,
-                            player_index: data.player_index - 1
-                        }
-                        document.getElementById(imgName).src = 'naipes/reves.png';
-                        socket.emit('use_12_card', info);
-                    } else {
-                        document.getElementById(imgName).src = 'naipes/reves.png';
-                        moveCardToPushed();
-                    }
-                }
-            });
-        });
-
-        observer.observe(data.card_index.status, {
-            attributes: true //configure it to listen to attribute changes
-        }); //TODO: try and understand observer so that 12 functionality works.
-        document.getElementById(imgName).src = data.card_value;
-
-    });
-
     socket.on('scream_talmud', function (data){
         me = data.player_info
 
-        if (me > 5){
+        if (me >= 5){
             alert("You have won the game");
             socket.disconnect()
         } else{
             alert("You have not won the game");
         }
-        //TODO: Finish Scream Talmud functionality
+    });
+
+    socket.on('game_end', function (data){
+        document.getElementById("end_message").innerHTML = data;
+        // decidir que se dejan de ver cosas, poner un mensaje en e centro,....lo que sea
+        lost_turn();
     });
 }
 
@@ -149,8 +99,8 @@ function renderNewPlayer() { // When new players come in, then their cards are r
 
 function renderStatus(data) {
     console.log(data);
-
-    for (var i = 1; i <= data.player_info.cards.length; i++) {
+    let i=1;
+    for (i = 1; i <= data.player_info.cards.length; i++) {
         var div = document.getElementById("card" + i);
         if (data.player_info.cards[i - 1].status === "visible") {
             var path = "/" + data.player_info.cards[i - 1].value;
@@ -159,6 +109,11 @@ function renderStatus(data) {
             div.innerHTML = "<img src='naipes/reves.png' alt=\"card\">"
         }
     }
+
+    for(let j=i;j<=4;j++) {
+        document.getElementById("card" + i).style.visibility="hidden";
+    }
+
     document.getElementById('OnlinePlayer').style.visibility = "hidden";
 
     // open as many chairs as number of players in
@@ -266,46 +221,77 @@ function use_special_card() {
 
         socket.emit('use_special_card', change); //use special card against index player
 
-    } else if (val === 12) {
-        let id_players = "";
-        let my_id = parseInt(me.name.split("_")[1]);
-        console.log("My ID: " + my_id);
-        for (let i = 1; i <= 4; i++) {
-            if (i !== my_id)
-                id_players += (i + ",");
-        }
-        id_players = id_players.replace(/,\s*$/, "");
-
-        var target_player = window.prompt("Choose one of your opponents (" + id_players + ")", "-1");
-        if (target_player === null || target_player === "-1" || target_player === "" + my_id) {
-            document.getElementById("available_card").src = "naipes/reves.png";
-            return;
-        }
-        target_player = parseInt(target_player) - 1;
-
-        var index = window.prompt("Choose one his cards (1-" + me.cards.length + ")", "-1");
-        if (index === null || index === "-1") {
-            document.getElementById("available_card").src = "naipes/reves.png";
-            return;
-        }
-
-        index = parseInt(index) - 1;
-
-        let change = {
-            card_index: index,
-            target_player: target_player
-        }
-
-        socket.emit('use_special_card', change); //use spacial card against index player
     }
 }
 
 function screamTalmud(){
-    socket.emit('screamTalmud');
+    socket.emit('scream_talmud',me.name);
+}
+
+function discardCard() {
+
+    let card = document.getElementById("pushed_card").src;
+    console.log("src: " + card);
+    if(card.endsWith(".png")) {
+        let last_index_bar = card.lastIndexOf("/");
+        card = card.substring(last_index_bar + 1);
+        let val_pushed_card = parseInt(card.split("-")[0]);
+
+        let pos_coincidence = -1;
+        for (let i = 0; i < me.cards.length; i++) {
+            let c = me.cards[i];
+            console.log("card in discard: " + JSON.stringify(c));
+            console.log("val_pushed_card " + val_pushed_card);
+            if (c.status === "visible") {
+                let v = parseInt(c.value.split("/")[1].split("-")[0])
+                if (v === val_pushed_card)
+                    pos_coincidence = i;
+            }
+        }
+
+        let info = {
+            player_index: parseInt(me.name.split("_")[1]) - 1,
+            card_index: pos_coincidence
+        }
+
+        socket.emit('discard', info);
+    }
 }
 
 function gained_turn() {
     document.getElementById("showDeck").style.visibility = "visible";
+
+    let card = document.getElementById("pushed_card").src;
+    let val_pushed_card = -1;
+    if(card.endsWith(".png")) {
+        let last_index_bar = card.lastIndexOf("/");
+        card = card.substring(last_index_bar + 1);
+        val_pushed_card = parseInt(card.split("-")[0]);
+    }
+
+    let sum = 0;
+    let pos_coincidence = -1;
+    for (let i = 0; i < me.cards.length; i++) {
+        let c = me.cards[i];
+        let v = parseInt(c.value.split("/")[1].split("-")[0])
+        sum += v;
+        if(c.status==="visible" && card.endsWith(".png")) {
+            if (v === val_pushed_card)
+                pos_coincidence = i;
+        }
+    }
+    // decide to hide scream talmud button
+    if(sum<=talmud_base_mark) {
+        document.getElementById("screamTalmud").style.visibility = "visible";
+    } else {
+        document.getElementById("screamTalmud").style.visibility = "hidden";
+    }
+    // decide to hide discard button
+    if(pos_coincidence!==-1) {
+        document.getElementById("discard").style.visibility = "visible";
+    } else {
+        document.getElementById("discard").style.visibility = "hidden";
+    }
 }
 
 function lost_turn() {
@@ -316,5 +302,6 @@ function lost_turn() {
     document.getElementById("specialAbility").style.visibility = "hidden";
     document.getElementById("message").style.visibility = "hidden";
     document.getElementById("screamTalmud").style.visibility = "hidden";
+    document.getElementById("discard").style.visibility = "hidden";
 }
 

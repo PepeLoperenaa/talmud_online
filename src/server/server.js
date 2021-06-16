@@ -4,6 +4,8 @@ let server = require('http').Server(app);
 let io = require('socket.io')(server);
 let _current_turn = -1;
 
+let talmud_base_mark = 5;
+
 // game status
 let game_status = {
     status: "awaiting",
@@ -124,16 +126,6 @@ io.on('connection', function (socket) {
             console.log(players[target_player]);
             console.log(info2);
 
-        } else if (val === 12) {
-            let target_player = data.target_player;
-            let card_index = data.card_index;
-            let target_card = players[target_player].cards[card_index];
-            var info = {
-                player_index: target_player + 1,
-                card_index: card_index + 1,
-                card_value: target_card.value
-            }
-            socket.emit('visualize_card', info);
         }
         moveToPushed();
         alert_change_turn();
@@ -152,38 +144,45 @@ io.on('connection', function (socket) {
         alert_change_turn();
     });
 
-    socket.on('use_12_card', function (data) {
-        console.log("Use 12 card!!");
-        changeCards_12(data.player_index, data.card_index, data.my_index);
+    socket.on('scream_talmud', function (data){
+        let player_index = parseInt(data.split("_")[1]) - 1;
+        let cards = players[player_index].cards;
+        let sum = 0;
+        for(let i=0;i<players[player_index].cards.length;i++) {
+            let c = players[player_index].cards[i];
+            sum += parseInt(c.value.split("/")[1].split("-")[0]);
+        }
+
+        if(sum<=talmud_base_mark) {
+            console.log("Game is about to end");
+            io.emit("game_end",'Player player_' + (player_index+1) + ' won the game');
+        }
+
+
+    });
+
+    socket.on('discard', function (data) {
+        let player_index = data.player_index;
+        let card_index = data.card_index;
+
+        console.log(data);
+
+        let user_card_value = players[player_index].cards[card_index].value;
+        players[player_index].cards.splice(card_index,1);
 
         var info = {
             num_players: players.length,
-            player_info: players[_current_turn]
+            player_info: players[player_index]
         }
 
         socket.emit('new_status', info);
-        console.log(info);
 
-        var info2 = {
-            num_players: players.length,
-            player_info: players[data.player_index]
-        }
+        push_cards.push(user_card_value);
 
-        socket.broadcast.to(players[data.player_index].socket).emit('new_status', info2);
+        io.emit('new_pushed_card', push_cards[push_cards.length - 1]); //send information to all players
 
-        moveToPushed();
         alert_change_turn();
     });
-
-    socket.on('scream_talmud', function (data){
-        let val = parseInt(new_cards.split("/")[1].split("-")[0]);
-
-        var info_player = {
-            player_cards: new_cards
-        }
-        console.log("Game is about to end")
-        alert_change_turn();
-    }); //TODO: Finish Scream Talmud functionality
 });
 
 server.listen(3000, function () {
@@ -230,16 +229,6 @@ function changeCards(target_player, card_index) {
     players[_current_turn].cards[card_index].status = "hidden";
     players[target_player].cards[random_index] = user_card;
     players[target_player].cards[random_index].status = "hidden";
-}
-
-function changeCards_12(target_player, card_index, my_index) {
-    let target_card = players[target_player].cards[card_index];
-    let user_card = players[_current_turn].cards[my_index];
-
-    players[_current_turn].cards[card_index] = target_card;
-    players[_current_turn].cards[card_index].status = "hidden";
-    players[target_player].cards[my_index] = user_card;
-    players[target_player].cards[my_index].status = "visible";
 }
 
 // shuffle array of cards

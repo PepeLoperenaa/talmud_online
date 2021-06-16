@@ -11,21 +11,23 @@
     <title>Talmud!</title>
 </head>
 <body>
-<button id="turn" name="button">Next turn</button>
+
+<ul>
+    <li><button id="showDeck" onclick=showDeck();><p>Get card!</p></button></li>
+    <li> <button id="changeCard" onclick=getCard();><p>Change card!</p></button></li>
+    <li><button id="dontChangeCard" onclick=moveCardToPushed();><p>Don´t change card!</p></button></li>
+    <li><button id="specialAbility" onclick=use_special_card();><p>Special Ability!</p></button></li>
+    <li><button id="screamTalmud" onclick="screamTalmud();"><p>Talmud!</p></button></li>
+    <li><button id="discard" onclick="discardCard();"><p>Discard Card</p></button></li>
+</ul>
+<p id="message"></p>
+<h1 id="end_message">algo</h1>
+
 <div id="player1site">
     <div id="player1">
         <button id="OnlinePlayer" onclick=playerOn();>
             <p>Press to join the table</p>
         </button>
-        <div id="player_button">
-            <button id="showDeck" onclick=showDeck();><p>Get card!</p></button>
-            <button id="changeCard" onclick=getCard();><p>Change card!</p></button>
-            <button id="dontChangeCard" onclick=moveCardToPushed();><p>Don´t change card!</p></button>
-            <button id="specialAbility" onclick=use_special_card();><p>Special Ability!</p></button>
-            <button id="screamTalmud" onclick="screamTalmud();"><p>Talmud!</p></button>
-            <p id="message"></p>
-
-        </div>
     </div>
     <div id="player1Cards">
         <div id="card1"></div>

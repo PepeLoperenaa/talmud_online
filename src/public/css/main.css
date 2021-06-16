@@ -26,6 +26,20 @@ button {
     height: 80px;
     width: 200px;
 }
+h1{
+    color: white;
+
+}
+
+ul{
+    list-style-type: none;
+}
+
+li {
+    float: left;
+    border-color: red;
+}
+
 
 #player1 {
     position: absolute;
@@ -229,4 +243,10 @@ button {
     visibility: hidden;
 }
 
+#screamTalmud{
+    visibility: hidden;
+}
 
+#discard{
+    visibility: hidden;
+}
