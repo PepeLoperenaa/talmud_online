@@ -4,8 +4,7 @@ body {
     background-repeat: no-repeat;
     background-position: center;
     background-attachment: fixed;
-    background-size: 1500px;
-    position: fixed;
+    background-size: 75%;
 }
 
 p {

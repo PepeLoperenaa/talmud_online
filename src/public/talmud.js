@@ -5,11 +5,14 @@ let me = null;
 let open_chairs = 1;
 let talmud_base_mark = 5; //to win the game.
 
-//steps 1: function in HTMl
-// 2: do the function in the client
-// 3: socket.emit to server
-// 4: socket.on en the server
-// 5:socket.on en the client
+/**
+ * Steps
+ * 1: function in HTMl
+ * 2: do the function in the client
+ * 3: socket.emit to server
+ * 4: socket.on en the server
+ * 5:socket.on en the client
+ */
 
 /**
  *  Preparing the game to the different clients that come in
@@ -70,7 +73,7 @@ function prepareGame() {
 
 
         if (val >= 10) {
-            document.getElementById('specialAbility').style.visibility = "visible"; //need to make them disappear after use.
+            document.getElementById('specialAbility').style.visibility = "visible";
         }
     });
 
@@ -181,7 +184,7 @@ function specialAbility() {
  * when we get the card, show what the value of the card is before changing it.
  */
 function getCard() {
-    var index = window.prompt("Choose one of your cards (1-" + me.cards.length + ")", "-1");
+    let index = window.prompt("Choose one of your cards (1-" + me.cards.length + ")", "-1");
     if (index === null || index === "-1") {
         document.getElementById("available_card").src = "naipes/reves.png";
         return;
@@ -211,7 +214,7 @@ function moveCardToPushed() {
 }
 
 /**
- * Using special cards such as number 11 and number 12.
+ * Using special cards such as number 10 and number 11.
  */
 function use_special_card() {
     let card = document.getElementById("available_card").src;
@@ -278,7 +281,7 @@ function discardCard() {
             console.log("val_pushed_card " + val_pushed_card);
             if (c.status === "visible") {
                 let v = parseInt(c.value.split("/")[1].split("-")[0])
-                if (v === val_pushed_card)
+                if (v => val_pushed_card)
                     pos_coincidence = i;
             }
         }
