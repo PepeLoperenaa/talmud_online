@@ -26,12 +26,13 @@ button {
     height: 80px;
     width: 200px;
 }
-h1{
+
+h1 {
     color: white;
 
 }
 
-ul{
+ul {
     list-style-type: none;
 }
 
@@ -243,10 +244,10 @@ li {
     visibility: hidden;
 }
 
-#screamTalmud{
+#screamTalmud {
     visibility: hidden;
 }
 
-#discard{
+#discard {
     visibility: hidden;
 }

@@ -1,3 +1,8 @@
+/**
+ * Server class where server is created and server functions are made.
+ * @type Express and Node.js are used to make the server.
+ */
+
 let express = require('express');
 let app = express();
 let server = require('http').Server(app);
@@ -15,23 +20,27 @@ let game_status = {
 // players
 let players = [];
 
+// playable cards
 let new_cards = ["naipes/1-Oro.png", "naipes/2-Oro.png", "naipes/3-Oro.png", "naipes/4-Oro.png", "naipes/5-Oro.png", "naipes/6-Oro.png", "naipes/7-Oro.png", "naipes/8-Oro.png", "naipes/9-Oro.png", "naipes/10-Oro.png", "naipes/11-Oro.png", "naipes/12-Oro.png",
     "naipes/1-Copa.png", "naipes/2-Copa.png", "naipes/3-Copa.png", "naipes/4-Copa.png", "naipes/5-Copa.png", "naipes/6-Copa.png", "naipes/7-Copa.png", "naipes/8-Copa.png", "naipes/9-Copa.png", "naipes/10-Copa.png", "naipes/11-Copa.png", "naipes/12-Copa.png",
     "naipes/1-Espada.png", "naipes/2-Espada.png", "naipes/3-Espada.png", "naipes/4-Espada.png", "naipes/5-Espada.png", "naipes/6-Espada.png", "naipes/7-Espada.png", "naipes/8-Espada.png", "naipes/9-Espada.png", "naipes/10-Espada.png", "naipes/11-Espada.png", "naipes/12-Espada.png",
     "naipes/1-Baston.png", "naipes/2-Baston.png", "naipes/3-Baston.png", "naipes/4-Baston.png", "naipes/5-Baston.png", "naipes/6-Baston.png", "naipes/7-Baston.png", "naipes/8-Baston.png", "naipes/9-Baston.png", "naipes/10-Baston.png", "naipes/11-Baston.png", "naipes/12-Baston.png",]; //cards to use
-let push_cards = []; // playable cards
+let push_cards = [];
 
 // shuffle cards
 shuffle(new_cards);
 
-app.use(express.static('public'));
+app.use(express.static('public')); //to find where all of the resources are.
 
+/**
+ * Connecting a player into the server
+ */
 io.on('connection', function (socket) {
     console.log('A user has connected to the server with the ID: ' + socket.id);
     socket.on('new_player', function (data) {
 
         if (players.length === 4) {
-            socket.emit('error', "Full room!");
+            socket.emit('error', "Full room!"); //only 4 players can come into the game.
             return;
         }
 
@@ -41,14 +50,14 @@ io.on('connection', function (socket) {
             let pos = 0;
             var card = {
                 value: new_cards[pos],
-                status: (i < 2) ? "hidden" : "visible"
+                status: (i < 2) ? "hidden" : "visible" //two cards should be visible and the other 2 should be hidden
             };
             c.push(card);
             // remove from deck
             new_cards.splice(pos, 1);
         }
 
-        var new_player = {
+        var new_player = { //information about a player.
             name: "player_" + (players.length + 1),
             socket: socket.id,
             cards: c
@@ -88,7 +97,7 @@ io.on('connection', function (socket) {
         let card = new_cards[0]; // view which card is on top
         let val = parseInt(card.split("/")[1].split("-")[0]);
         let done = false;
-        if (val === 10) {
+        if (val === 10) { //value 10 shows another one of your cards.
             // let be visible the first of his hidden cards
             for (var i = 0; i < players[_current_turn].cards.length && !done; i++) {
                 if (players[_current_turn].cards[i].status === "hidden") {
@@ -104,12 +113,12 @@ io.on('connection', function (socket) {
 
             socket.emit('new_status', info);
 
-        } else if (val === 11) {
-            let target_player = data.target_player;
-            let card_index = data.card_index;
+        } else if (val === 11) { // change card with another player without knowing the value.
+            let target_player = data.target_player; //player which we are going to change the cards
+            let card_index = data.card_index; //the card we are going to change.
             changeCards(target_player, card_index);
 
-            var info = {
+            var info = { //info of the player which is using the special card
                 num_players: players.length,
                 player_info: players[_current_turn]
             }
@@ -117,7 +126,7 @@ io.on('connection', function (socket) {
             socket.emit('new_status', info);
             console.log(info);
 
-            var info2 = {
+            var info2 = { //info of the player where the card has changed.
                 num_players: players.length,
                 player_info: players[target_player]
             }
@@ -131,6 +140,9 @@ io.on('connection', function (socket) {
         alert_change_turn();
     });
 
+    /**
+     * Getting cards from the deck of cards.
+     */
     socket.on('request_deck_card', function (data) {
         let info = {
             card: new_cards[0],
@@ -139,28 +151,37 @@ io.on('connection', function (socket) {
         socket.emit('response_deck_card', info);
     });
 
+    /**
+     * pushing card into array
+     */
     socket.on('move_card_to_pushed', function (data) {
         moveToPushed();
         alert_change_turn();
     });
 
-    socket.on('scream_talmud', function (data){
-        let player_index = parseInt(data.split("_")[1]) - 1;
+    /**
+     * Finishing the game if a player has a value less than 5
+     */
+    socket.on('scream_talmud', function (data) {
+        let player_index = parseInt(data.split("_")[1]) - 1; //getting value of the 4 cards.
         let cards = players[player_index].cards;
         let sum = 0;
-        for(let i=0;i<players[player_index].cards.length;i++) {
+        for (let i = 0; i < players[player_index].cards.length; i++) {
             let c = players[player_index].cards[i];
             sum += parseInt(c.value.split("/")[1].split("-")[0]);
         }
 
-        if(sum<=talmud_base_mark) {
+        if (sum <= talmud_base_mark) {
             console.log("Game is about to end");
-            io.emit("game_end",'Player player_' + (player_index+1) + ' won the game');
+            io.emit("game_end", 'Player player_' + (player_index + 1) + ' won the game');
         }
 
 
     });
 
+    /**
+     * Discarding the cards if the value is the same
+     */
     socket.on('discard', function (data) {
         let player_index = data.player_index;
         let card_index = data.card_index;
@@ -168,7 +189,7 @@ io.on('connection', function (socket) {
         console.log(data);
 
         let user_card_value = players[player_index].cards[card_index].value;
-        players[player_index].cards.splice(card_index,1);
+        players[player_index].cards.splice(card_index, 1);
 
         var info = {
             num_players: players.length,
@@ -185,10 +206,15 @@ io.on('connection', function (socket) {
     });
 });
 
-server.listen(3000, function () {
+server.listen(3000, function () { //where the server is going to run.
     console.log("Server is running in: http://localhost:3000");
 });
 
+/**
+ * Getting the clients Player name E.G: player1
+ * @param name
+ * @returns {number}
+ */
 function getPlayerIndex(name) {
     var index;
     for (var i = 0; i < players.length; i++) {
@@ -198,6 +224,11 @@ function getPlayerIndex(name) {
     return index;
 }
 
+/**
+ * Switching cards with the ones in the deck.
+ * @param name
+ * @param index_change
+ */
 function switchCard(name, index_change) {
     var index = getPlayerIndex(name);
     var player_card = players[getPlayerIndex(name)].cards[index_change];
@@ -212,6 +243,9 @@ function switchCard(name, index_change) {
     players[getPlayerIndex(name)].cards[index_change] = card;
 }
 
+/**
+ * Used cards to be pushed on the pushed cards array.
+ */
 function moveToPushed() {
     var card = new_cards[0];
     new_cards.splice(0, 1);
@@ -219,6 +253,11 @@ function moveToPushed() {
     io.emit('new_pushed_card', push_cards[push_cards.length - 1]);
 }
 
+/**
+ * Change cards with another player.
+ * @param target_player the player where the card where is going to be changed
+ * @param card_index //what card is to be changed.
+ */
 function changeCards(target_player, card_index) {
     let random_index = Math.floor(Math.random() * 4); // 0-3
 
@@ -231,7 +270,11 @@ function changeCards(target_player, card_index) {
     players[target_player].cards[random_index].status = "hidden";
 }
 
-// shuffle array of cards
+/**
+ * Shuffle the array of cards
+ * @param array
+ * @returns {*} returns the array shuffled
+ */
 function shuffle(array) {
     var currentIndex = array.length, randomIndex;
 
@@ -250,6 +293,9 @@ function shuffle(array) {
     return array;
 }
 
+/**
+ * Alerting players that the turns have changed.
+ */
 function alert_change_turn() {
     game_status.status = "started";
     _current_turn++;
