@@ -3,7 +3,11 @@ let socket;
 let game_status = {};
 let me = null;
 let open_chairs = 1;
-let talmud_base_mark = 5; //to win the game.
+let talmud_base_mark = 11; //to win the game.
+/**
+ * Normally on Talmud, the game should reach less than 5. As the game is online and  after some testing,
+ * We have decided to boosted up into 11 as it is very hard to reach 5 before all of the cards end.
+ */
 
 /**
  * Steps
@@ -23,6 +27,9 @@ function prepareGame() {
         'forceNew': true
     });
 
+    /**
+     * Check what the game status is through out the game
+     */
     socket.on('game_status', function (data) {
         console.log(data);
         game_status = data;
@@ -32,10 +39,16 @@ function prepareGame() {
             lost_turn();
     });
 
+    /**
+     * If there is a full room show this error.
+     */
     socket.on('error', function (data) {
         window.alert("Full room!");
     });
 
+    /**
+     * Showing the new status on the clients console
+     */
     socket.on('new_status', function (data) {
         me = data.player_info;
         renderStatus(data);
@@ -43,12 +56,18 @@ function prepareGame() {
         console.log(data);
     });
 
+    /**
+     * Check the card that the user gets
+     */
     socket.on('get_card_response', function (data) {
         me = data;
         console.log("get_card_response: " + data);
         updateStatus(data);
     });
 
+    /**
+     * Check what new card has been pushed into the pushed_cards array
+     */
     socket.on('new_pushed_card', function (data) {
         console.log('new_pushed card ' + data);
         document.getElementById("oldDeck").style.visibility = 'visible';
@@ -60,6 +79,9 @@ function prepareGame() {
         renderNewPlayer();
     });
 
+    /**
+     * See what to do with after the get card method.
+     */
     socket.on('response_deck_card', function (data) {
         console.log("card on deck: " + data.card);
         document.getElementById("available_card").src = data.card;
@@ -72,15 +94,18 @@ function prepareGame() {
         document.getElementById("message").innerHTML = "Which action to do?";
 
 
-        if (val >= 10) {
+        if (val === 10 || val === 11) {
             document.getElementById('specialAbility').style.visibility = "visible";
         }
     });
 
+    /**
+     * finish the game method
+     */
     socket.on('scream_talmud', function (data) {
         me = data.player_info
 
-        if (me >= 5) {
+        if (me >= talmud_base_mark) {
             alert("You have won the game");
             socket.disconnect()
         } else {
@@ -88,6 +113,9 @@ function prepareGame() {
         }
     });
 
+    /**
+     * Show the title with the player who has won.
+     */
     socket.on('game_end', function (data) {
         document.getElementById("end_message").innerHTML = data;
         // When game finishes, Title changes.
@@ -207,10 +235,8 @@ function getCard() {
 /**
  * Moving card to pushed array
  */
-
 function moveCardToPushed() {
     socket.emit('move_card_to_pushed', "");
-    //socket.emit = do the call to the server
 }
 
 /**
@@ -258,6 +284,9 @@ function use_special_card() {
     }
 }
 
+/**
+ * Call into the server to finalize the game
+ */
 function screamTalmud() {
     socket.emit('scream_talmud', me.name);
 }

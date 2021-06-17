@@ -171,7 +171,7 @@ io.on('connection', function (socket) {
             sum += parseInt(c.value.split("/")[1].split("-")[0]);
         }
 
-        if (sum <= talmud_base_mark) {
+        if (sum >= talmud_base_mark) {
             console.log("Game is about to end");
             io.emit("game_end", 'Player player_' + (player_index + 1) + ' won the game');
         }
@@ -248,7 +248,7 @@ function switchCard(name, index_change) {
  */
 function moveToPushed() {
     var card = new_cards[0];
-    new_cards.splice(0, 1);
+    new_cards.splice(0, 1); //method splice deletes one object from an array. In this case a card.
     push_cards.push(card);
     io.emit('new_pushed_card', push_cards[push_cards.length - 1]);
 }
