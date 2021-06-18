@@ -1,9 +1,11 @@
-//client page. each variable is different for every player
+/**
+ * client page. Here, functions are specific for the clients. Things only happen on the client.
+ */
 let socket;
 let game_status = {};
 let me = null;
 let open_chairs = 1;
-let talmud_base_mark = 11; //to win the game.
+let talmud_base_mark = 11; //to win the game value of the clients card should be less than or equal to 11.
 /**
  * Normally on Talmud, the game should reach less than 5. As the game is online and  after some testing,
  * We have decided to boosted up into 11 as it is very hard to reach 5 before all of the cards end.
@@ -22,7 +24,6 @@ let talmud_base_mark = 11; //to win the game.
  *  Preparing the game to the different clients that come in
  */
 function prepareGame() {
-    //socket.on = answer of the server to do an action or visualization
     socket = io.connect('http://localhost:3000', {
         'forceNew': true
     });
@@ -31,6 +32,7 @@ function prepareGame() {
      * Check what the game status is through out the game
      */
     socket.on('game_status', function (data) {
+        //socket.on = answer of the server to do an action or visualization
         console.log(data);
         game_status = data;
         if (data.turn === me.name)
@@ -93,7 +95,7 @@ function prepareGame() {
         document.getElementById("dontChangeCard").style.visibility = "visible";
         document.getElementById("message").innerHTML = "Which action to do?";
 
-
+        //depending on the value of the response_deck_card show some buttons or dont show them
         if (val === 10 || val === 11) {
             document.getElementById('specialAbility').style.visibility = "visible";
         }
@@ -310,7 +312,7 @@ function discardCard() {
             console.log("val_pushed_card " + val_pushed_card);
             if (c.status === "visible") {
                 let v = parseInt(c.value.split("/")[1].split("-")[0])
-                if (v => val_pushed_card)
+                if (v >= val_pushed_card)
                     pos_coincidence = i;
             }
         }
@@ -376,4 +378,3 @@ function lost_turn() {
     document.getElementById("screamTalmud").style.visibility = "hidden";
     document.getElementById("discard").style.visibility = "hidden";
 }
-

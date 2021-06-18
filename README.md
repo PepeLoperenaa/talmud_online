@@ -45,7 +45,7 @@ As a general fact making the application online, will have a great impact on the
 
 ## Class diagram ## 
 
-![Class diagram](resources/class_diagram_Talmud.png)
+![Class diagram](resources/Talmud_class_diagram_v2.png)
 
 ## Test plan
 

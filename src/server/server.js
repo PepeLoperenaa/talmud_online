@@ -2,7 +2,6 @@
  * Server class where server is created and server functions are made.
  * @type Express and Node.js are used to make the server.
  */
-
 let express = require('express');
 let app = express();
 let server = require('http').Server(app);
