@@ -312,7 +312,7 @@ function discardCard() {
             console.log("val_pushed_card " + val_pushed_card);
             if (c.status === "visible") {
                 let v = parseInt(c.value.split("/")[1].split("-")[0])
-                if (v >= val_pushed_card)
+                if (v <= val_pushed_card)
                     pos_coincidence = i;
             }
         }
