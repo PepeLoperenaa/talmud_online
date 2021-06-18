@@ -5,11 +5,12 @@
 | ------------- |:-------------:| -----:|
 |1.0            |Starting version|12/05/2021|
 |1.5            |Added Test cases and changed Class diagram after feedback|17/05/2021|
+|2.0            |Changed class diagram and typos|18/06/2021|
 
 
 ## Description of assignment
 
-Talmud is a card game where between 2 or 4 players play to get as less points as possible. Players get 4 cards and can only see 2 out of the 4 cards at the start of the game. The goal is to change the cards of higher value to cards which have a lower value and reach less than 5.
+Talmud is a card game where between 2 or 4 players play to get as fewer points as possible. Players get 4 cards and can only see 2 out of the 4 cards at the start of the game. The goal is to change the cards of higher value to card which have a lower value and reach less than 5.
 
 Only 2 of the 4 cards are visible. Higher numbers on the deck such as 10,11 and 12 (Jota, caballo and Rey) have different special abilities. In this case, 10 gives you the ability to see another of your cards. Card number 11 can change one of the cards from your deck with another player’s card without seeing what the value of the card is. Card number 12 does the same function as card 11 but with the ability to see the other players card and if the player wants to change the card, he can change it.
 
@@ -22,7 +23,7 @@ To win, you need to score less than 5 points with all your cards. When it is a p
 A player is eliminated when the player gets over 20 points
 
 
-## JavaScript libraries used:
+## JavaScript's libraries used:
 
 Socket.io will be used for the back-end part of the game as it is a library that enables real-time, bidirectional, and event-based communication between the browser and the server. **[1]**
 
@@ -36,7 +37,7 @@ Regarding the frontend, jQuery will be used as it has a lot of functionalities w
 
 ## Selling point of application.
 
-As an application, “Talmud” stands out since it is an innovative game that has never seen online. It is a well-known card game in Spain, but it has never been seen outside the country. As the application will be a multiplayer game, a maximum of 4 people can play around the same server. This means that with the recent Covid pandemic people can still play the game without being in danger due to Covid. **[2]**
+As an application, “Talmud” stands out since it is an innovative game that has never seen online. It is a well-known card game in Spain, but it has never been seen outside the country. As the application will be a multiplayer game, a maximum of 4 people can play around the same server. This means that with the recent COVID-19 pandemic people can still play the game without being in danger due to Covid-19. **[2]**
 
 It is also a card game which is very enjoyable and easy to play. This means that with the friendly user-interface the application will have, anyone who wants to play can play as it will be an online game.
 As a general fact making the application online, will have a great impact on the sales as this will make the application available to all the users which are interested in the game.
@@ -52,7 +53,7 @@ As a general fact making the application online, will have a great impact on the
 The test plan, will be done with a fix scenario as in the real game, all the scenarios possible may be random.
 In this test cases we will only play with the 2 cards that we know the value as only 2 out of the 4 cards are visible at the start of the game.
 
-The Following object are created before every test case
+The Following objects are created before every test case
 
 | Object type   | Object name   | Score    |value|Cards[4]|Method|
 | ------------- |:-------------:|----------|-----|--------|-----:|
@@ -73,7 +74,7 @@ The Following object are created before every test case
 
 
 ## Test case 1
-In this test case the players find card number 10 which has a special ability and they can see one more of their cards. Remeber that from the start of the game, only 2 of the 4 cards are visible.
+In this test case the players find card number 10 which has a special ability, and they can see one more of their cards. Remember that from the start of the game, only 2 of the 4 cards are visible.
 
 | Object type   | Object name   | Score    |value|Cards[4]|Method|Output|
 | ------------- |:-------------:|----------|-----|--------|------|-----:|
@@ -85,7 +86,7 @@ In this test case the players find card number 10 which has a special ability an
 |Player         |Pepe           |0         |     |        |seeCards()| 1 Oro, 3 Baston, 4 Copa|
 
 ## Test case 2
-In this test case the players find card number 11 which has a special ability where one of the players changes a card from the others deck without looking at it. Remeber that from the start of the game, only 2 of the 4 cards are visible.
+In this test case the players find card number 11 which has a special ability where one of the players changes a card from the others deck without looking at it. Remember that from the start of the game, only 2 of the 4 cards are visible.
 
 | Object type   | Object name   | Score    |value|Cards[4]|Method|Output|
 | ------------- |:-------------:|----------|-----|--------|------|-----:|
@@ -99,25 +100,7 @@ In this test case the players find card number 11 which has a special ability wh
 |Player         |Gerjan         |0         |     |        |seeCards()| 5 Copa, 3 Baston|
 
 ## Test case 3
-In this test case the players find card number 12 which has a special ability where one of the players changes a card from the others deck looking at it. If the player is interested he will change it. If that is not the case, the player will .Remeber that from the start of the game, only 2 of the 3 cards are visible. In this case, Pepe gets card 12 Baston but will not use it. Gerjan gets another 12 and will use it.
-
-| Object type   | Object name   | Score    |value|Cards[4]|Method|Output| 
-| ------------- |:-------------:|----------|-----|--------|------|-----:|
-|Player         |Pepe           |0         |     |        |      |      |
-|Player         |Pepe           |0         |     |        |seeCards()| 1 Oro, 3 Baston|
-|Player         |Gerjan         |0         |     |        |seeCards()| 5 Copa, 4 Copa|   
-|Player         |Pepe           |0         |     |        |getCardFromDeck()|12 Baston|     
-|Player         |Gerjan         |0         |     |        |      |      |
-|Card           |Baston         |          |12   |        |UseSpecialAbility(Pepe)|Card from other player = 4 Copa|
-|Player         |Pepe           |0         |     |        |seeCards()| 1 Oro, 3 Baston|
-|Player         |Gerjan         |0         |     |        |seeCards()| 5 Copa, 4 Copa|
-|Player         |Gerjan         |0         |     |        |getCardFromDeck()|12 Oro|
-|Card           |Oro            |          |12   |        |UseSpecialAbility(Pepe)|Card from other player = 1 oro|
-|Player         |Pepe           |0         |     |        |seeCards()| 5 Copa, 3 Baston|
-|Player         |Gerjan         |0         |     |        |seeCards()| 1 oro, 4 Copa|
-
-## Test case 4
-A player has a score less than 5 so he wins the game. Remeber that from the start of the game, only 2 of the 3 cards are visible.
+A player has a score less than 5, so he wins the game. Remember that from the start of the game, only 2 of the 3 cards are visible.
 
 | Object type   | Object name   | Score    |value|Cards[4]|Method|Output|
 | ------------- |:-------------:|----------|-----|--------|------|-----:|
@@ -141,8 +124,8 @@ A player has a score less than 5 so he wins the game. Remeber that from the star
 |Player         |Pepe           |-5        |     |        |getScore()|-5            |
 |Player         |Gerjan         |5         |     |        |getScore()|5             |
 
-## Test case 5
-A card on the players card is the same as the one in the table. The player leaves the card on the table as he can do that. Remeber that from the start of the game, only 2 of the 3 cards are visible.
+## Test case 4
+A card on the players card is the same as the one in the table. The player leaves the card on the table as he can do that. Remember that from the start of the game, only 2 of the 3 cards are visible.
 
 | Object type   | Object name   | Score    |value|Cards[4]|Method|Output|
 | ------------- |:-------------:|----------|-----|--------|------|-----:|
@@ -152,7 +135,7 @@ A card on the players card is the same as the one in the table. The player leave
 |Player         |Pepe           |0         |     |        |getCardFromDeck()|3 Oro|
 |Player         |Pepe           |0         |     |        |seeCards()| 1 Oro      |     
 
-## Bibliogrpahy ##
+## Bibliography ##
 
 1.	What is Socket.io. (2021, 10 March). Socket.io. https://socket.io/docs/v4
 2.	Baura, J. (2020, 9 June). Multiplayer Game Development with JavaScript. YouTube. https://www.youtube.com/watch?v=NvkM1immvWo
